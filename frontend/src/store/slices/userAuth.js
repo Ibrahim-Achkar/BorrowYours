@@ -24,7 +24,7 @@ const slice = createSlice({
       userAuth.error = action.payload;
     },
     userLogout: (userAuth, action) => {
-      userAuth.userInfo = null;
+      userAuth.userInfo = {};
     },
   },
 });

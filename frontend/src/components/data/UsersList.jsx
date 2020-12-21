@@ -1,5 +1,7 @@
+//package imports
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+//app imports
 import { loadUsers, getAllUsers } from '../../store/slices/usersSlice';
 
 const UsersList = () => {
