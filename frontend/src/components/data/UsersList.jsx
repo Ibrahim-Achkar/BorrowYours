@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadUsers, getAllUsers } from '../store/slices/usersSlice';
+import { loadUsers, getAllUsers } from '../../store/slices/usersSlice';
 
 const UsersList = () => {
   const dispatch = useDispatch();
-  const users = useSelector(getAllUsers);
-  //(state) => state.entities.users.list
 
   useEffect(() => {
     dispatch(loadUsers());
   }, [dispatch]);
+
+  const users = useSelector(getAllUsers);
 
   return (
     <>
