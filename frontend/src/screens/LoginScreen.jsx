@@ -20,9 +20,11 @@ const LoginScreen = ({ location, history }) => {
 
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
+  //figure out why it would be good to put a redirect here rather than
+  //pushing straight to profile page
   useEffect(() => {
     if (userInfo.name) {
-      history.push(redirect);
+      history.push('/profile');
     }
   }, [history, userInfo, redirect]);
 

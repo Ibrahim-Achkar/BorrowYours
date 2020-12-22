@@ -1,12 +1,23 @@
+//package imports
 import express from 'express';
-const router = express.Router();
+//app imports
 import {
+  authUser,
+  registerUser,
+  getUserProfile,
+  updateUserProfile,
   getUsers,
   getUserById,
-  authUser,
 } from '../controllers/userControllers.js';
+import { protect } from '../middleware/authMiddleware.js';
 
-router.route('/').get(getUsers);
+const router = express.Router();
+
+router.route('/').post(registerUser).get(getUsers);
+router
+  .route('/profile')
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile);
 router.route('/:id').get(getUserById);
 router.post('/login', authUser);
 

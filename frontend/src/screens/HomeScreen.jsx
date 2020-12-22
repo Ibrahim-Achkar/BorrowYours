@@ -8,23 +8,23 @@ const HomeScreen = () => {
   return (
     <>
       <Container fluid>
-        <Row className='mt-4 mb-4 d-flex align-items-center'>
-          <Col className='mt-3 col-12 text-center mb-3'>
+        <Row className='mt-4 mb-4'>
+          <Col className='mt-4 mb-4 text-center'>
             <h1>What do you need?</h1>
           </Col>
         </Row>
-        <Row className='mt-3 mb-3 d-flex'>
-          <Col className='col-12'>
+        <Row className='mt-4 mb-4'>
+          <Col>
             <hr className='mt-4 mb-4' />
           </Col>
         </Row>
-        <Row className='mt-3 mb-3 d-flex justify-content-center'>
-          <Col className='mt-3 mb-3 d-flex justify-content-center'>
+        <Row>
+          <Col className='mt-4 mb-4 d-flex justify-content-center'>
             <SearchBox />
           </Col>
         </Row>
-        <Row className='mt-3 mb-3 d-flex'>
-          <Col className='col-12'>
+        <Row className='mt-4 mb-4'>
+          <Col>
             <hr className='mt-4 mb-4' />
           </Col>
         </Row>

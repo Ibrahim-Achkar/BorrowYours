@@ -1,7 +1,8 @@
-import axios from 'axios';
+//package imports
 import { createSlice } from '@reduxjs/toolkit';
-// import { apiCallBegan } from '../actions/apiActions';
 import { createSelector } from 'reselect';
+//app imports
+import { apiCallBegan } from '../actions/apiActions';
 
 //Slice creator, containing reducer
 const slice = createSlice({
@@ -37,33 +38,16 @@ export const {
 export default slice.reducer;
 
 //Action creators
-
-//Getting list of users from server
-export const loadUsers = () => {
-  return function (dispatch) {
-    dispatch(usersRequested());
-    axios
-      .get(`/api/users`)
-      .then((response) => {
-        const users = response.data;
-        dispatch(usersReceived(users));
-      })
-      .catch((error) => {
-        dispatch(usersRequestFailed(error.message));
-      });
-  };
+export const loadUsers = () => (dispatch, getState) => {
+  return dispatch(
+    apiCallBegan({
+      url: `/api/users`,
+      onStart: usersRequested.type,
+      onSuccess: usersReceived.type,
+      onError: usersRequestFailed.type,
+    })
+  );
 };
-
-// export const loadUsers = () => (dispatch, getState) => {
-//   return dispatch(
-//     apiCallBegan({
-//       url: `/api/users`,
-//       onStart: usersRequested.type,
-//       onSuccess: usersReceived.type,
-//       onError: usersRequestFailed.type,
-//     })
-//   );
-// };
 
 //Memoisation functions
 export const getAllUsers = createSelector(

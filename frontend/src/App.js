@@ -11,6 +11,8 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 const store = myStore();
 const persistor = persistStore(store);
@@ -23,7 +25,9 @@ const App = () => {
           <Header />
           <main className='py-3'>
             <Container>
+              <Route path='/profile' component={ProfileScreen} />
               <Route path='/login' component={LoginScreen} />
+              <Route path='/register' component={RegisterScreen} />
               <Route path='/' component={HomeScreen} exact />
             </Container>
           </main>

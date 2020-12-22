@@ -47,9 +47,19 @@ const userSchema = mongoose.Schema(
   }
 );
 
+//method for matching passwords after decrypting
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
+//middleware for encrypting a new password, runs pre-save of a new user
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
 const User = mongoose.model('User', userSchema);
 
