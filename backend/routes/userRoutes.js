@@ -4,7 +4,7 @@ import express from 'express';
 import {
   authUser,
   registerUser,
-  getUserProfile,
+  getUserLoginDetails,
   updateUserProfile,
   getUsers,
   getUserById,
@@ -16,7 +16,7 @@ const router = express.Router();
 router.route('/').post(registerUser).get(getUsers);
 router
   .route('/profile')
-  .get(protect, getUserProfile)
+  .get(protect, getUserLoginDetails)
   .put(protect, updateUserProfile);
 router.route('/:id').get(getUserById);
 router.post('/login', authUser);

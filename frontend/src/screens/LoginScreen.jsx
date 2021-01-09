@@ -15,18 +15,18 @@ const LoginScreen = ({ location, history }) => {
 
   const dispatch = useDispatch();
 
-  const userLogin = useSelector((state) => state.features.userAuth);
-  const { loading, error, userInfo } = userLogin;
+  const user = useSelector((state) => state.features.userAuth);
+  const { loading, error, userLogin } = user;
 
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
   //figure out why it would be good to put a redirect here rather than
   //pushing straight to profile page
   useEffect(() => {
-    if (userInfo.name) {
+    if (userLogin.name) {
       history.push('/profile');
     }
-  }, [history, userInfo, redirect]);
+  }, [history, userLogin, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();

@@ -4,7 +4,15 @@ import * as actions from '../actions/apiActions';
 const api = ({ dispatch }) => (next) => async (action) => {
   if (action.type !== actions.apiCallBegan.type) return next(action);
 
-  const { url, method, data, onStart, onSuccess, onError } = action.payload;
+  const {
+    url,
+    data,
+    headers,
+    method,
+    onStart,
+    onSuccess,
+    onError,
+  } = action.payload;
 
   if (onStart) dispatch({ type: onStart });
 
@@ -13,6 +21,7 @@ const api = ({ dispatch }) => (next) => async (action) => {
   try {
     const response = await axios.request({
       url,
+      headers,
       method,
       data,
     });

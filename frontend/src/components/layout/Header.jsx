@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 const Header = ({ history }) => {
   const dispatch = useDispatch();
 
-  const userInfo = useSelector((state) => state.features.userAuth.userInfo);
-  const { name } = userInfo;
+  const userLogin = useSelector((state) => state.features.userAuth.userLogin);
+  const { name } = userLogin;
 
   const logoutHandler = () => {
     dispatch(logout());

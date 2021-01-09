@@ -20,15 +20,15 @@ const RegisterScreen = ({ location, history }) => {
   const dispatch = useDispatch();
 
   const userRegister = useSelector((state) => state.features.userAuth);
-  const { loading, error, userInfo } = userRegister;
+  const { loading, error, userLogin } = userRegister;
 
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
   useEffect(() => {
-    if (userInfo.name) {
+    if (userLogin.name) {
       history.push(redirect);
     }
-  }, [history, userInfo, redirect]);
+  }, [history, userLogin, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();

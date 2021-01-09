@@ -7,7 +7,8 @@ const slice = createSlice({
   initialState: {
     loading: false,
     error: null,
-    userInfo: {},
+    userLogin: {},
+    userDetails: {},
   },
   reducers: {
     //logging in and out
@@ -17,14 +18,14 @@ const slice = createSlice({
     },
     userLoginReceived: (userAuth, action) => {
       userAuth.loading = false;
-      userAuth.userInfo = action.payload;
+      userAuth.userLogin = action.payload;
     },
     userLoginFailed: (userAuth, action) => {
       userAuth.loading = false;
       userAuth.error = action.payload;
     },
     userLogout: (userAuth, action) => {
-      userAuth.userInfo = {};
+      userAuth.userLogin = {};
     },
 
     //registering new user
@@ -34,23 +35,37 @@ const slice = createSlice({
     },
     userRegReceived: (userAuth, action) => {
       userAuth.loading = false;
-      userAuth.userInfo = action.payload;
+      userAuth.userLogin = action.payload;
     },
     userRegFailed: (userAuth, action) => {
       userAuth.loading = false;
       userAuth.error = action.payload;
     },
 
-    //getting logged in user details
-    userInfoRequested: (userAuth, action) => {
+    //Getting logged in user details
+    userDetailsRequested: (userAuth, action) => {
       userAuth.loading = true;
       userAuth.error = null;
     },
-    userInfoReceived: (userAuth, action) => {
+    userDetailsReceived: (userAuth, action) => {
       userAuth.loading = false;
-      userAuth.userInfo = action.payload;
+      userAuth.userDetails = action.payload;
     },
-    userInfoFailed: (userAuth, action) => {
+    userDetailsFailed: (userAuth, action) => {
+      userAuth.loading = false;
+      userAuth.error = action.payload;
+    },
+
+    //updating logged in user details
+    userUpdateRequested: (userAuth, action) => {
+      userAuth.loading = true;
+      userAuth.error = null;
+    },
+    userUpdateReceived: (userAuth, action) => {
+      userAuth.loading = false;
+      userAuth.userLogin = action.payload;
+    },
+    userUpdateFailed: (userAuth, action) => {
       userAuth.loading = false;
       userAuth.error = action.payload;
     },
@@ -66,9 +81,12 @@ export const {
   userRegRequested,
   userRegReceived,
   userRegFailed,
-  userInfoRequested,
-  userInfoReceived,
-  userInfoFailed,
+  userDetailsRequested,
+  userDetailsReceived,
+  userDetailsFailed,
+  userUpdateRequested,
+  userUpdateReceived,
+  userUpdateFailed,
 } = slice.actions;
 export default slice.reducer;
 
@@ -102,25 +120,39 @@ export const register = (name, email, password) => (dispatch) => {
   );
 };
 
-//Getting logged in user information
-// export const getUserInfo = (id) => (dispatch, getState) => {
-//   const config = {
-//     Authorization: 'Bearer ${}'
-//   }
+//Getting user details by id
+export const getUserDetails = (id, headers) => (dispatch) => {
+  dispatch(
+    apiCallBegan({
+      url: `api/users/${id}`,
+      headers,
+      method: 'get',
+      onStart: userDetailsRequested.type,
+      onSuccess: userDetailsReceived.type,
+      onError: userDetailsFailed.type,
+    })
+  );
+};
 
-//   dispatch(
-//     apiCallBegan({
-//       url: `api/users/profile`,
-//       data: { id },
-//       method: 'get',
-//       onStart: userInfoRequested.type,
-//       onSuccess: userInfoReceived.type,
-//       onError: userInfoFailed.type,
-//     })
-//   );
-// };
+//updating user
+export const updateUserProfile = (
+  { id, name, email, favouriteThing, password, confirmPassword },
+  headers
+) => (dispatch) => {
+  dispatch(
+    apiCallBegan({
+      url: `api/users/profile`,
+      data: { id, name, email, favouriteThing, password, confirmPassword },
+      headers,
+      method: 'put',
+      onStart: userUpdateRequested.type,
+      onSuccess: userUpdateReceived.type,
+      onError: userUpdateFailed.type,
+    })
+  );
+};
 
 export const logout = () => (dispatch) => {
-  //   localStorage.removeItem('userInfo')
+  //   localStorage.removeItem('userLogin')
   return dispatch(userLogout());
 };

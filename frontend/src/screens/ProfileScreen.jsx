@@ -4,68 +4,111 @@ import { Form, Button, Row, Col, Table } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 //app imports
-// import Message from '../components/utility/Message';
-// import Loader from '../components/utility/Loader';
-// import { getUserDetails, updateUserProfile } from '../store/slices/userAuth';
+import Message from '../components/utility/Message';
+import Loader from '../components/utility/Loader';
+import { getUserDetails, updateUserProfile } from '../store/slices/userAuth';
 
 const ProfileScreen = ({ location, history }) => {
-  // const [name, setName] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
-  // const [message, setMessage] = useState(null);
+  const dispatch = useDispatch();
+  const userAuth = useSelector((state) => state.features.userAuth);
+  const { loading, success, error, userLogin, userDetails } = userAuth;
 
-  // const dispatch = useDispatch();
-
-  const userInfo = useSelector((state) => state.features.userAuth.userInfo);
-  const { name, email, favouriteThing, imageURL } = userInfo;
-
-  // const userLogin = useSelector((state) => state.userLogin);
-  // const { userInfo } = userLogin;
-
-  // const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-  // const { success } = userUpdateProfile;
-
-  // const orderListMy = useSelector((state) => state.orderListMy);
-  // const { loading: loadingOrders, error: errorOrders, orders } = orderListMy;
+  const [name, setName] = useState(userLogin.name);
+  const [email, setEmail] = useState(userLogin.email);
+  const [favouriteThing, setFavouriteThing] = useState(userLogin.email);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    if (!userInfo.name) {
+    if (!userLogin.name) {
       history.push('/login');
     }
-  }, [history, userInfo]);
+  }, [history, userLogin]);
 
-  // const submitHandler = (e) => {
-  //   e.preventDefault();
-  //   if (password !== confirmPassword) {
-  //     setMessage('Passwords do not match'); //setMessage fills message up above (useState), then we go down to under the h1 and see that it's being used in an error.
-  //   } else {
-  //     dispatch(updateUserProfile({ id: user._id, name, email, password }));
-  //   }
-  // };
+  //Submission of headers and data through updateUserProfile
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${userLogin.token}`,
+  };
+
+  const data = {
+    id: userLogin._id,
+    name,
+    email,
+    favouriteThing,
+    password,
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setMessage('Passwords do not match');
+    } else {
+      dispatch(updateUserProfile(data, headers));
+    }
+  };
 
   return (
-    <>
-      <Row className='mt-4 mb-4'>
-        <Col md={3}>
-          <h1>User Profile</h1>
-        </Col>
-      </Row>
-      <Row className='mt-4 mb-4'>
-        <Col md={3}>
-          <h2>Name</h2>
-          <p>{name}</p>
-        </Col>
-        <Col md={3}>
-          <h2>Email</h2>
-          <p>{email}</p>
-        </Col>
-        <Col md={3}>
-          <h2>Favourite Thing</h2>
-          <p>{favouriteThing}</p>
-        </Col>
-      </Row>
-    </>
+    <Row>
+      <Col md={3}>
+        <h2>Your Profile 🌞</h2>
+        {message && <Message variant='danger'>{message}</Message>}
+        {error && <Message variant='danger'>{error}</Message>}
+        {success && <Message variant='success'>Profile Updated!</Message>}
+        {loading && <Loader />}
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId='name'>
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type='name'
+              placeholder='enter name'
+              value={name}
+              onChange={(e) => setName(e.target.value)}></Form.Control>
+          </Form.Group>
+          <Form.Group controlId='email'>
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              type='email'
+              placeholder='enter email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}></Form.Control>
+          </Form.Group>
+          <Form.Group controlId='favouriteThing'>
+            <Form.Label>Favourite Thing</Form.Label>
+            <Form.Control
+              type='favouriteThing'
+              placeholder='enter favourite thing'
+              value={favouriteThing}
+              onChange={(e) =>
+                setFavouriteThing(e.target.value)
+              }></Form.Control>
+          </Form.Group>
+          <Form.Group controlId='password'>
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type='password'
+              placeholder='enter password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}></Form.Control>
+          </Form.Group>
+          <Form.Group controlId='confirmPassword'>
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control
+              type='Password'
+              placeholder='confirm password'
+              value={confirmPassword}
+              onChange={(e) =>
+                setConfirmPassword(e.target.value)
+              }></Form.Control>
+          </Form.Group>
+          <Button type='submit' variant='primary'>
+            Update
+          </Button>
+        </Form>
+      </Col>
+      <Col md={9}></Col>
+    </Row>
   );
 };
 
