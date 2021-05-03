@@ -24,9 +24,14 @@ const Header = ({ history }) => {
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='ml-auto'>
-              <LinkContainer to='/bath'>
+              <LinkContainer to='/items'>
                 <Nav.Link>
-                  <i className='fa fa-bath'></i> Have a Bath
+                  <i className='fa fa-bath'></i> Items
+                </Nav.Link>
+              </LinkContainer>
+              <LinkContainer to='/users'>
+                <Nav.Link>
+                  <i className='fa fa-bath'></i> Users
                 </Nav.Link>
               </LinkContainer>
               {name ? (

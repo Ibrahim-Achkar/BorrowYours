@@ -1,3 +1,4 @@
+//package imports
 import mongoose from 'mongoose';
 
 const itemSchema = mongoose.Schema(
@@ -11,7 +12,7 @@ const itemSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
+    imageURL: {
       type: String,
       required: true,
     },
@@ -20,17 +21,32 @@ const itemSchema = mongoose.Schema(
       required: true,
     },
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: 'Category',
     },
     description: {
       type: String,
       required: true,
     },
+    barcode: {
+      type: Number,
+      required: false,
+    },
     countInStock: {
       type: Number,
       required: true,
       default: 0,
+    },
+    isAvailable: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    isDelete: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {

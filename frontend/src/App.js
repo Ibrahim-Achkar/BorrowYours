@@ -13,6 +13,8 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import ItemScreen from './screens/ItemScreen';
+import UsersScreen from './screens/UsersScreen';
 
 const store = myStore();
 const persistor = persistStore(store);
@@ -28,6 +30,8 @@ const App = () => {
               <Route path='/profile' component={ProfileScreen} />
               <Route path='/login' component={LoginScreen} />
               <Route path='/register' component={RegisterScreen} />
+              <Route path='/items' component={ItemScreen} />
+              <Route path='/users' component={UsersScreen} />
               <Route path='/' component={HomeScreen} exact />
             </Container>
           </main>

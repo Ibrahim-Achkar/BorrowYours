@@ -42,6 +42,7 @@ export const loadUsers = () => (dispatch, getState) => {
   return dispatch(
     apiCallBegan({
       url: `/api/users`,
+      method: 'get',
       onStart: usersRequested.type,
       onSuccess: usersReceived.type,
       onError: usersRequestFailed.type,

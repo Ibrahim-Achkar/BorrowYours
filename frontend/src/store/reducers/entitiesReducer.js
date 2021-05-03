@@ -1,4 +1,6 @@
+//package imports
 import { combineReducers } from 'redux';
+//app imports
 import itemsReducer from '../slices/itemsSlice';
 import usersReducer from '../slices/usersSlice';
 

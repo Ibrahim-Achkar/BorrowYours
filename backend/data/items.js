@@ -1,6 +1,7 @@
 const items = [
   {
     name: 'A large balloon',
+    quantity: 1,
     image: '/images/balloon.jpg',
     description: 'It goes up and up',
     brand: '🎈',

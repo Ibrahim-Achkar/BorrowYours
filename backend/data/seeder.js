@@ -3,14 +3,16 @@ WARNING RUNNING EITHER OF THESE SCRIPTS WILL WIPE THE DATABASE
 npm run data:import
 npm run data:destroy
 */
-
+//package imports
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import colors from 'colors';
+//app imports
 import users from './users.js';
 import items from './items.js';
 import User from '../models/userModel.js';
 import Item from '../models/itemModel.js';
+import Category from '../models/itemCategoryModel.js';
 import Booking from '../models/bookingModel.js';
 import connectDB from '../config/db.js';
 
@@ -22,6 +24,7 @@ const importData = async () => {
   try {
     await Booking.deleteMany();
     await Item.deleteMany();
+    await Cateory.deleteMany();
     await User.deleteMany();
 
     const createdUsers = await User.insertMany(users);
@@ -45,6 +48,7 @@ const destroyData = async () => {
   try {
     await Booking.deleteMany();
     await Item.deleteMany();
+    await Cateory.deleteMany();
     await User.deleteMany();
 
     console.log('Data Destroyed!'.red.inverse);

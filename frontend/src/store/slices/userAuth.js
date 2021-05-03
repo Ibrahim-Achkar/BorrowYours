@@ -8,7 +8,6 @@ const slice = createSlice({
     loading: false,
     error: null,
     userLogin: {},
-    userDetails: {},
   },
   reducers: {
     //logging in and out
@@ -43,18 +42,18 @@ const slice = createSlice({
     },
 
     //Getting logged in user details
-    userDetailsRequested: (userAuth, action) => {
-      userAuth.loading = true;
-      userAuth.error = null;
-    },
-    userDetailsReceived: (userAuth, action) => {
-      userAuth.loading = false;
-      userAuth.userDetails = action.payload;
-    },
-    userDetailsFailed: (userAuth, action) => {
-      userAuth.loading = false;
-      userAuth.error = action.payload;
-    },
+    // userDetailsRequested: (userAuth, action) => {
+    //   userAuth.loading = true;
+    //   userAuth.error = null;
+    // },
+    // userDetailsReceived: (userAuth, action) => {
+    //   userAuth.loading = false;
+    //   userAuth.userDetails = action.payload;
+    // },
+    // userDetailsFailed: (userAuth, action) => {
+    //   userAuth.loading = false;
+    //   userAuth.error = action.payload;
+    // },
 
     //updating logged in user details
     userUpdateRequested: (userAuth, action) => {
@@ -81,9 +80,9 @@ export const {
   userRegRequested,
   userRegReceived,
   userRegFailed,
-  userDetailsRequested,
-  userDetailsReceived,
-  userDetailsFailed,
+  // userDetailsRequested,
+  // userDetailsReceived,
+  // userDetailsFailed,
   userUpdateRequested,
   userUpdateReceived,
   userUpdateFailed,
@@ -121,18 +120,18 @@ export const register = (name, email, password) => (dispatch) => {
 };
 
 //Getting user details by id
-export const getUserDetails = (id, headers) => (dispatch) => {
-  dispatch(
-    apiCallBegan({
-      url: `api/users/${id}`,
-      headers,
-      method: 'get',
-      onStart: userDetailsRequested.type,
-      onSuccess: userDetailsReceived.type,
-      onError: userDetailsFailed.type,
-    })
-  );
-};
+// export const getUserDetails = (id, headers) => (dispatch) => {
+//   dispatch(
+//     apiCallBegan({
+//       url: `api/users/${id}`,
+//       headers,
+//       method: 'get',
+//       onStart: userDetailsRequested.type,
+//       onSuccess: userDetailsReceived.type,
+//       onError: userDetailsFailed.type,
+//     })
+//   );
+// };
 
 //updating user
 export const updateUserProfile = (

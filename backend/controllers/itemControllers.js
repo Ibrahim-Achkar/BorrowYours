@@ -1,4 +1,6 @@
+//package imports
 import asyncHandler from 'express-async-handler';
+//app imports
 import Item from '../models/itemModel.js';
 
 //@route    GET api/items
@@ -6,7 +8,12 @@ import Item from '../models/itemModel.js';
 //@access   Public
 const getItems = asyncHandler(async (req, res) => {
   const items = await Item.find({});
-  res.json(items);
+  if (items) {
+    res.json(items);
+  } else {
+    res.status(404);
+    throw new Error('No items found');
+  }
 });
 
 //@route    GET api/items/:id
@@ -18,7 +25,7 @@ const getItemById = asyncHandler(async (req, res) => {
     res.json(item);
   } else {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error('Item not found');
   }
 });
 

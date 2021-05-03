@@ -1,17 +1,16 @@
 //package imports
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Row, Col, Table } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 //app imports
 import Message from '../components/utility/Message';
 import Loader from '../components/utility/Loader';
-import { getUserDetails, updateUserProfile } from '../store/slices/userAuth';
+import { updateUserProfile } from '../store/slices/userAuth';
 
 const ProfileScreen = ({ location, history }) => {
   const dispatch = useDispatch();
   const userAuth = useSelector((state) => state.features.userAuth);
-  const { loading, success, error, userLogin, userDetails } = userAuth;
+  const { loading, success, error, userLogin } = userAuth;
 
   const [name, setName] = useState(userLogin.name);
   const [email, setEmail] = useState(userLogin.email);
