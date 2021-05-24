@@ -13,7 +13,7 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import ItemScreen from './screens/ItemScreen';
+import ItemListScreen from './screens/ItemListScreen';
 import UsersScreen from './screens/UsersScreen';
 
 const store = myStore();
@@ -30,7 +30,12 @@ const App = () => {
               <Route path='/profile' component={ProfileScreen} />
               <Route path='/login' component={LoginScreen} />
               <Route path='/register' component={RegisterScreen} />
-              <Route path='/items' component={ItemScreen} />
+              <Route path='/items' component={ItemListScreen} exact />
+              <Route
+                path='/items/page/:pageNumber'
+                component={ItemListScreen}
+                exact
+              />
               <Route path='/users' component={UsersScreen} />
               <Route path='/' component={HomeScreen} exact />
             </Container>
