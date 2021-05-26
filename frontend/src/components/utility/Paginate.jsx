@@ -5,12 +5,6 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { useLocation } from 'react-router-dom';
 
 const Paginate = ({ pages, page, isAdmin = false, keyword = '' }) => {
-  // const target = (input) => {
-  //   if (input === 'items') {
-  //     return `/items/`;
-  //   }
-  // };
-
   const location = useLocation();
   const path = location.pathname;
   const baseURL =

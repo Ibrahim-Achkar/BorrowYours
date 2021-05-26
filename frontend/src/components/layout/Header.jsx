@@ -1,8 +1,11 @@
+//package imports
 import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
-import { logout } from '../../store/slices/userAuth';
 import { useDispatch, useSelector } from 'react-redux';
+
+//app imports
+import { logout } from '../../store/slices/userAuth';
 
 const Header = ({ history }) => {
   const dispatch = useDispatch();

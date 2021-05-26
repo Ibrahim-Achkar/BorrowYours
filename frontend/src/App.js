@@ -15,6 +15,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ItemListScreen from './screens/ItemListScreen';
 import UsersScreen from './screens/UsersScreen';
+import ItemScreen from './screens/ItemScreen';
 
 const store = myStore();
 const persistor = persistStore(store);
@@ -30,6 +31,7 @@ const App = () => {
               <Route path='/profile' component={ProfileScreen} />
               <Route path='/login' component={LoginScreen} />
               <Route path='/register' component={RegisterScreen} />
+              <Route path='/items/:id' component={ItemScreen} exact />
               <Route path='/items' component={ItemListScreen} exact />
               <Route
                 path='/items/page/:pageNumber'

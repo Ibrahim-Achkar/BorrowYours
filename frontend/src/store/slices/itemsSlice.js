@@ -9,6 +9,7 @@ const slice = createSlice({
   name: 'items',
   initialState: {
     list: [],
+    item: {},
     loading: false,
     lastFetch: null,
     error: null,
@@ -16,9 +17,10 @@ const slice = createSlice({
     pages: '',
   },
   reducers: {
-    //requesting list of users
+    //requesting list of items
     itemsRequested: (items, action) => {
       items.loading = true;
+      items.item = {}; //TODO check if this is a good thing to do here
     },
     itemsReceived: (items, action) => {
       items.list = action.payload.items;
@@ -30,15 +32,34 @@ const slice = createSlice({
     itemsRequestFailed: (items, action) => {
       items.loading = false;
     },
+
+    //requesting an item
+    itemRequested: (items, action) => {
+      items.loading = true;
+    },
+    itemReceived: (items, action) => {
+      items.item = action.payload;
+      items.loading = false;
+    },
+    itemRequestFailed: (items, action) => {
+      items.loading = false;
+    },
   },
 });
 
 //Exports
-export const { itemsReceived, itemsRequested, itemsRequestFailed } =
-  slice.actions;
+export const {
+  itemsRequested,
+  itemsReceived,
+  itemsRequestFailed,
+  itemRequested,
+  itemReceived,
+  itemRequestFailed,
+} = slice.actions;
 export default slice.reducer;
 
 //Action creators
+//load items into state
 export const loadItems =
   (keyword = '', pageNumber = '') =>
   (dispatch, getState) => {
@@ -53,9 +74,27 @@ export const loadItems =
     );
   };
 
+//get single item details
+export const listItemDetails = (id) => (dispatch, getState) => {
+  return dispatch(
+    apiCallBegan({
+      url: `/api/items/${id}`,
+      method: 'get',
+      onStart: itemRequested.type,
+      onSuccess: itemReceived.type,
+      onError: itemRequestFailed.type,
+    })
+  );
+};
+
 //Memoisation functions
 export const getAllItems = createSelector(
   (state) => state.entities.items,
   (items) => items
   // (items) => items.list
 );
+
+// export const getItem = createSelector(
+//   (state) => state.entities.items.item,
+//   (item) => item
+// );

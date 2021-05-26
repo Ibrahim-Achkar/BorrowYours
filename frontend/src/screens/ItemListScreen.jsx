@@ -65,7 +65,7 @@ const ItemListScreen = ({ history, match }) => {
                   <td>{item.brand}</td>
                   <td>{item.user}</td>
                   <td>
-                    <LinkContainer to={`/admin/item/${item._id}/edit`}>
+                    <LinkContainer to={`/items/${item._id}`}>
                       <Button variant='light' className='btn-sm'>
                         <i className='fas fa-edit'></i>
                       </Button>

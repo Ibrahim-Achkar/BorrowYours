@@ -3,8 +3,8 @@ import asyncHandler from 'express-async-handler';
 //app imports
 import Item from '../models/itemModel.js';
 
-//@route    GET api/items
 //@desc     Get all items from database
+//@route    GET api/items
 //@access   Public
 const getItems = asyncHandler(async (req, res) => {
   const pageSize = 4;
@@ -25,8 +25,8 @@ const getItems = asyncHandler(async (req, res) => {
   res.json({ items, page, pages: Math.ceil(count / pageSize) });
 });
 
-//@route    GET api/items/:id
 //@desc     Get item by id from database
+//@route    GET api/items/:id
 //@access   Public
 const getItemById = asyncHandler(async (req, res) => {
   const item = await Item.findById(req.params.id);
