@@ -9,6 +9,7 @@ import Message from '../components/utility/Message';
 import Loader from '../components/utility/Loader';
 import Paginate from '../components/utility/Paginate';
 import { loadItems, getAllItems } from '../store/slices/itemsSlice';
+import './ItemListScreen.css';
 
 const ItemListScreen = ({ history, match }) => {
   const pageNumber = match.params.pageNumber || 1;
@@ -33,10 +34,6 @@ const ItemListScreen = ({ history, match }) => {
           </Button>
         </Col>
       </Row>
-      {/* {loadingDelete && <Loader />}
-      {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
-      {loadingCreate && <Loader />}
-      {errorCreate && <Message variant='danger'>{errorCreate}</Message>} */}
       {loading ? (
         <Loader />
       ) : error ? (
@@ -46,7 +43,6 @@ const ItemListScreen = ({ history, match }) => {
           <Table striped bordered hover responsive className='table-sm'>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>NAME</th>
                 <th>DESCRIPTION</th>
                 <th>CATEGORY</th>
@@ -57,27 +53,22 @@ const ItemListScreen = ({ history, match }) => {
             </thead>
             <tbody>
               {list.map((item) => (
-                <tr key={item._id}>
-                  <td>{item._id}</td>
-                  <td>{item.name}</td>
-                  <td>{item.description}</td>
-                  <td>{item.category}</td>
-                  <td>{item.brand}</td>
-                  <td>{item.user}</td>
-                  <td>
-                    <LinkContainer to={`/items/${item._id}`}>
-                      <Button variant='light' className='btn-sm'>
-                        <i className='fas fa-edit'></i>
-                      </Button>
-                    </LinkContainer>
-                    <Button
-                      variant='danger'
-                      className='btn-sm'
-                      onClick={() => `deleteHandler(product._id)`}>
-                      <i className='fas fa-trash'></i>
-                    </Button>
-                  </td>
-                </tr>
+                <LinkContainer to={`/items/${item._id}`}>
+                  <tr key={item._id} class='item-row'>
+                    <td>{item.name}</td>
+                    <td>{item.description}</td>
+                    <td>{item.category}</td>
+                    <td>{item.brand}</td>
+                    <td>{item.user.name}</td>
+                    <td>
+                      <LinkContainer to={`/items/${item._id}`}>
+                        <Button variant='light' className='btn-sm'>
+                          <p>View Item</p>
+                        </Button>
+                      </LinkContainer>
+                    </td>
+                  </tr>
+                </LinkContainer>
               ))}
             </tbody>
           </Table>

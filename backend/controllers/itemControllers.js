@@ -20,7 +20,8 @@ const getItems = asyncHandler(async (req, res) => {
   const count = await Item.countDocuments({ ...keyword });
   const items = await Item.find({ ...keyword })
     .limit(pageSize)
-    .skip(pageSize * (page - 1));
+    .skip(pageSize * (page - 1))
+    .populate('user', 'name');
 
   res.json({ items, page, pages: Math.ceil(count / pageSize) });
 });
