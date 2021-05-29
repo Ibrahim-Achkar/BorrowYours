@@ -53,8 +53,10 @@ const ItemListScreen = ({ history, match }) => {
             </thead>
             <tbody>
               {list.map((item) => (
-                <LinkContainer to={`/items/${item._id}`}>
-                  <tr key={item._id} class='item-row'>
+                <LinkContainer
+                  key={('link to', item._id)}
+                  to={`/items/${item._id}`}>
+                  <tr key={item._id}>
                     <td>{item.name}</td>
                     <td>{item.description}</td>
                     <td>{item.category}</td>
