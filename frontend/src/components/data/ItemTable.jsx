@@ -9,7 +9,7 @@ import Message from '../utility/Message';
 import Loader from '../utility/Loader';
 import Paginate from '../utility/Paginate';
 import Meta from '../utility/Meta';
-import { loadItems, getAllItems } from '../store/slices/itemsSlice';
+import { loadItems, getAllItems } from '../../store/slices/itemsSlice';
 
 const ItemTable = ({ history, match }) => {
   const pageNumber = match.params.pageNumber || 1;
