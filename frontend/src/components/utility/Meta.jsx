@@ -12,7 +12,7 @@ const Meta = ({ title, description, keywords }) => {
 };
 
 Meta.defaultProps = {
-  title: 'Welcome to BorrowYours',
+  title: 'BorrowYours',
   description: 'Share things with your friends!',
   keywords: 'products, sharing, community, social',
 };
