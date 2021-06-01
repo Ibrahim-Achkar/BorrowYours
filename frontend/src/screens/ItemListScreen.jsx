@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/utility/Message';
 import Loader from '../components/utility/Loader';
 import Paginate from '../components/utility/Paginate';
+import Meta from '../components/utility/Meta';
 import { loadItems, getAllItems } from '../store/slices/itemsSlice';
 import './ItemListScreen.css';
 
@@ -24,6 +25,7 @@ const ItemListScreen = ({ history, match }) => {
 
   return (
     <>
+      <Meta title={Meta.defaultProps.title} />
       <Row className='align-items-center'>
         <Col>
           <h1>Products</h1>
