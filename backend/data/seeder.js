@@ -10,10 +10,11 @@ import colors from 'colors';
 //app imports
 import users from './users.js';
 import items from './items.js';
+import categories from './categories.js';
 import User from '../models/userModel.js';
 import Item from '../models/itemModel.js';
 import Category from '../models/itemCategoryModel.js';
-import Booking from '../models/bookingModel.js';
+// import Booking from '../models/bookingModel.js';
 import connectDB from '../config/db.js';
 
 dotenv.config();
@@ -22,16 +23,18 @@ connectDB();
 
 const importData = async () => {
   try {
-    await Booking.deleteMany();
+    // await Booking.deleteMany();
     await Item.deleteMany();
-    await Cateory.deleteMany();
+    await Category.deleteMany();
     await User.deleteMany();
 
+    const createdCategories = await Category.insertMany(categories);
     const createdUsers = await User.insertMany(users);
     const adminUser = createdUsers[0]._id;
+    const firstCat = createdCategories[0]._id;
 
     const sampleItems = items.map((item) => {
-      return { ...item, user: adminUser };
+      return { ...item, user: adminUser, category: firstCat };
     });
 
     await Item.insertMany(sampleItems);
@@ -48,7 +51,7 @@ const destroyData = async () => {
   try {
     await Booking.deleteMany();
     await Item.deleteMany();
-    await Cateory.deleteMany();
+    await Category.deleteMany();
     await User.deleteMany();
 
     console.log('Data Destroyed!'.red.inverse);

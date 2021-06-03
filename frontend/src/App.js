@@ -13,6 +13,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import ItemListScreen from './screens/ItemListScreen';
 import UsersScreen from './screens/UsersScreen';
 import ItemScreen from './screens/ItemScreen';
+import CreateItemScreen from './screens/CreateItemScreen';
 
 const App = () => {
   return (
@@ -20,18 +21,20 @@ const App = () => {
       <Header />
       <main className='py-3'>
         <Container>
-          <Route path='/profile' component={ProfileScreen} />
-          <Route path='/login' component={LoginScreen} />
-          <Route path='/register' component={RegisterScreen} />
-          <Route path='/items/:id' component={ItemScreen} exact />
-          <Route path='/items' component={ItemListScreen} exact />
+          <Route path='/profile' render={ProfileScreen} exact />
           <Route
-            path='/items/page/:pageNumber'
-            component={ItemListScreen}
+            path='/profile/page/:pageNumber'
+            render={ProfileScreen}
             exact
           />
-          <Route path='/users' component={UsersScreen} />
-          <Route path='/' component={HomeScreen} exact />
+          <Route path='/login' component={LoginScreen} />
+          <Route path='/register' render={RegisterScreen} />
+          <Route path='/items/:id' render={ItemScreen} exact />
+          <Route path='/items' render={ItemListScreen} exact />
+          <Route path='/items/page/:pageNumber' render={ItemListScreen} exact />
+          <Route path='/create_item' component={CreateItemScreen} />
+          <Route path='/users' render={UsersScreen} />
+          <Route path='/' render={HomeScreen} exact />
         </Container>
       </main>
       <Footer />

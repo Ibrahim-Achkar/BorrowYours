@@ -1,14 +1,22 @@
 //package imports
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 //app imports
 import ProfileInfoBox from '../components/data/ProfileInfoBox';
+import ItemTable from '../components/data/ItemTable';
 
-const ProfileScreen = ({ location, history }) => {
+const ProfileScreen = ({ location, history, match }) => {
   return (
-    <Container>
-      <ProfileInfoBox history={history} />
+    <Container fluid>
+      <Row>
+        <Col md={4}>
+          <ProfileInfoBox history={history} />
+        </Col>
+        <Col>
+          <ItemTable history={history} match={match} name='Your Items' />
+        </Col>
+      </Row>
     </Container>
   );
 };

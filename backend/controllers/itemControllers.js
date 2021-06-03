@@ -2,6 +2,7 @@
 import asyncHandler from 'express-async-handler';
 //app imports
 import Item from '../models/itemModel.js';
+import Category from '../models/itemCategoryModel.js';
 
 //@desc     Get all items from database
 //@route    GET api/items
@@ -21,7 +22,8 @@ const getItems = asyncHandler(async (req, res) => {
   const items = await Item.find({ ...keyword })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-    .populate('user', 'name');
+    .populate('user', 'name')
+    .populate('category', 'name', Category);
 
   res.json({ items, page, pages: Math.ceil(count / pageSize) });
 });
@@ -39,4 +41,37 @@ const getItemById = asyncHandler(async (req, res) => {
   }
 });
 
-export { getItems, getItemById };
+//@desc     create an item
+//@route    POST/api/items/create_item
+//@access   Public (for now)
+
+const createItem = asyncHandler(async (req, res) => {
+  const {
+    user,
+    name,
+    imageURL,
+    brand,
+    category,
+    description,
+    barcode,
+    countInStock,
+  } = req.body;
+
+  const item = new Item({
+    user,
+    name,
+    imageURL,
+    brand,
+    category,
+    description,
+    barcode,
+    countInStock,
+    isAvailable: false,
+    isDelete: false,
+  });
+
+  const createdItem = await item.save();
+  res.status(201).json(createdItem);
+});
+
+export { getItems, getItemById, createItem };

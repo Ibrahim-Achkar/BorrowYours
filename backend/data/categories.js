@@ -23,6 +23,14 @@ const categories = [
     name: 'Clothes',
     description: 'You put these on.',
   },
+  {
+    name: 'Kitchen',
+    description: 'Things you use in your kitchen.',
+  },
+  {
+    name: 'Tools',
+    description: 'Things to DIY with.',
+  },
 ];
 
 export default categories;

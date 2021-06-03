@@ -91,10 +91,9 @@ export const listItemDetails = (id) => (dispatch, getState) => {
 export const getAllItems = createSelector(
   (state) => state.entities.items,
   (items) => items
-  // (items) => items.list
 );
 
-// export const getItem = createSelector(
-//   (state) => state.entities.items.item,
-//   (item) => item
-// );
+//create an item
+export const createItem = () => (dispatch, getState) => {
+  console.log('hello');
+};

@@ -41,20 +41,6 @@ const slice = createSlice({
       userAuth.error = action.payload;
     },
 
-    //Getting logged in user details
-    // userDetailsRequested: (userAuth, action) => {
-    //   userAuth.loading = true;
-    //   userAuth.error = null;
-    // },
-    // userDetailsReceived: (userAuth, action) => {
-    //   userAuth.loading = false;
-    //   userAuth.userDetails = action.payload;
-    // },
-    // userDetailsFailed: (userAuth, action) => {
-    //   userAuth.loading = false;
-    //   userAuth.error = action.payload;
-    // },
-
     //updating logged in user details
     userUpdateRequested: (userAuth, action) => {
       userAuth.loading = true;
@@ -134,24 +120,22 @@ export const register = (name, email, password) => (dispatch) => {
 // };
 
 //updating user
-export const updateUserProfile = (
-  { id, name, email, favouriteThing, password, confirmPassword },
-  headers
-) => (dispatch) => {
-  dispatch(
-    apiCallBegan({
-      url: `api/users/profile`,
-      data: { id, name, email, favouriteThing, password, confirmPassword },
-      headers,
-      method: 'put',
-      onStart: userUpdateRequested.type,
-      onSuccess: userUpdateReceived.type,
-      onError: userUpdateFailed.type,
-    })
-  );
-};
+export const updateUserProfile =
+  ({ id, name, email, favouriteThing, password, confirmPassword }, headers) =>
+  (dispatch) => {
+    dispatch(
+      apiCallBegan({
+        url: `/api/users/profile`,
+        data: { id, name, email, favouriteThing, password, confirmPassword },
+        headers,
+        method: 'put',
+        onStart: userUpdateRequested.type,
+        onSuccess: userUpdateReceived.type,
+        onError: userUpdateFailed.type,
+      })
+    );
+  };
 
 export const logout = () => (dispatch) => {
-  //   localStorage.removeItem('userLogin')
   return dispatch(userLogout());
 };

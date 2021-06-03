@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+
 //app imports
 import Message from '../utility/Message';
 import Loader from '../utility/Loader';
 import { updateUserProfile } from '../../store/slices/userAuth';
 
-const ProfileInfoBox = ({ location, history }) => {
+const ProfileInfoBox = ({ history }) => {
   const dispatch = useDispatch();
   const userAuth = useSelector((state) => state.features.userAuth);
   const { loading, success, error, userLogin } = userAuth;
@@ -52,7 +53,7 @@ const ProfileInfoBox = ({ location, history }) => {
 
   return (
     <Row>
-      <Col md={3}>
+      <Col>
         <h2>Your Profile 🌞</h2>
         {message && <Message variant='danger'>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
@@ -108,7 +109,6 @@ const ProfileInfoBox = ({ location, history }) => {
           </Button>
         </Form>
       </Col>
-      <Col md={9}></Col>
     </Row>
   );
 };

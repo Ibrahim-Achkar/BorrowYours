@@ -1,6 +1,6 @@
 //package imports
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Image, ListGroup, Button, Form } from 'react-bootstrap';
 
@@ -10,7 +10,7 @@ import Loader from '../components/utility/Loader';
 import Meta from '../components/utility/Meta';
 import { listItemDetails, getAllItems } from '../store/slices/itemsSlice';
 
-const ItemScreen = ({ history, match }) => {
+const ItemScreen = ({ match }) => {
   const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
 
@@ -20,6 +20,8 @@ const ItemScreen = ({ history, match }) => {
 
   const items = useSelector(getAllItems);
   const { loading: itemLoading, error: itemError, item } = items;
+
+  const history = useHistory();
 
   return (
     <>
@@ -97,9 +99,13 @@ const ItemScreen = ({ history, match }) => {
           </Row>
         </>
       )}
-      <Link className='btn- btn-primary my-4 p-2' to='/items'>
+      <Button
+        className='btn- btn-primary my-4 p-2'
+        onClick={() => {
+          history.goBack();
+        }}>
         Go Back
-      </Link>
+      </Button>
     </>
   );
 };
