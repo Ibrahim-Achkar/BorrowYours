@@ -1,8 +1,9 @@
+//package imports
 import mongoose from 'mongoose';
 
 const itemCategorySchema = mongoose.Schema(
   {
-    category: {
+    name: {
       type: String,
       required: true,
     },
@@ -16,6 +17,6 @@ const itemCategorySchema = mongoose.Schema(
   }
 );
 
-const Item = mongoose.model('Category', itemCategorySchema);
+const Category = mongoose.model('Category', itemCategorySchema);
 
-export default Item;
+export default Category;
