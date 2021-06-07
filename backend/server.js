@@ -3,11 +3,13 @@ import express from 'express';
 import connectDB from './config/db.js';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import path from 'path';
 import colors from 'colors';
 //app imports
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import itemRoutes from './routes/itemRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 //Bring in global variables
 dotenv.config();
@@ -34,6 +36,11 @@ const PORT = process.env.PORT || 5000;
 //Mount routes
 app.use('/api/users', userRoutes);
 app.use('/api/items', itemRoutes);
+app.use('/api/upload', uploadRoutes);
+
+//Getting access to uploads folder
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 //Errors & Error middleware
 app.use(notFound);

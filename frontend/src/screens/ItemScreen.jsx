@@ -8,11 +8,17 @@ import { Row, Col, Image, ListGroup, Button, Form } from 'react-bootstrap';
 import Message from '../components/utility/Message';
 import Loader from '../components/utility/Loader';
 import Meta from '../components/utility/Meta';
-import { listItemDetails, getAllItems } from '../store/slices/itemsSlice';
+import {
+  listItemDetails,
+  getAllItems,
+  removeItem,
+} from '../store/slices/itemsSlice';
 
 const ItemScreen = ({ match }) => {
-  const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
+  const history = useHistory();
+
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
     dispatch(listItemDetails(match.params.id));
@@ -21,7 +27,10 @@ const ItemScreen = ({ match }) => {
   const items = useSelector(getAllItems);
   const { loading: itemLoading, error: itemError, item } = items;
 
-  const history = useHistory();
+  const itemRemoveHandler = () => {
+    dispatch(removeItem());
+    history.goBack();
+  };
 
   return (
     <>
@@ -34,7 +43,7 @@ const ItemScreen = ({ match }) => {
           <Meta title={item.name} />
           <Row>
             <Col md={6}>
-              <Image src={item.image} alt={item.name} fluid />
+              <Image src={item.imageURL} alt={item.name} fluid />
             </Col>
             <Col md={3}>
               <ListGroup variant='flush'>
@@ -102,7 +111,7 @@ const ItemScreen = ({ match }) => {
       <Button
         className='btn- btn-primary my-4 p-2'
         onClick={() => {
-          history.goBack();
+          itemRemoveHandler();
         }}>
         Go Back
       </Button>

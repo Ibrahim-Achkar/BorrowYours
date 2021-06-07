@@ -66,9 +66,6 @@ export const {
   userRegRequested,
   userRegReceived,
   userRegFailed,
-  // userDetailsRequested,
-  // userDetailsReceived,
-  // userDetailsFailed,
   userUpdateRequested,
   userUpdateReceived,
   userUpdateFailed,
@@ -104,20 +101,6 @@ export const register = (name, email, password) => (dispatch) => {
     })
   );
 };
-
-//Getting user details by id
-// export const getUserDetails = (id, headers) => (dispatch) => {
-//   dispatch(
-//     apiCallBegan({
-//       url: `api/users/${id}`,
-//       headers,
-//       method: 'get',
-//       onStart: userDetailsRequested.type,
-//       onSuccess: userDetailsReceived.type,
-//       onError: userDetailsFailed.type,
-//     })
-//   );
-// };
 
 //updating user
 export const updateUserProfile =
