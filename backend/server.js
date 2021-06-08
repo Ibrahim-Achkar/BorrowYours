@@ -34,9 +34,9 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 //Mount routes
-app.use('/api/users', userRoutes);
-app.use('/api/items', itemRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/items', itemRoutes);
+app.use('/api/v1/upload', uploadRoutes);
 
 //Getting access to uploads folder
 const __dirname = path.resolve();

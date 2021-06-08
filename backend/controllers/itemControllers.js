@@ -4,8 +4,15 @@ import asyncHandler from 'express-async-handler';
 import Item from '../models/itemModel.js';
 import Category from '../models/itemCategoryModel.js';
 
+/*Routes:
+ * GET    /api/v1/items              Get all items from database        Public
+ * GET    /api/v1/items/categories   Get all categories from database   Public
+ * GET    /api/v1/items/:id          Get item by id from database       Public
+ * POST   /api/v1/items/create_item  Create an item                     Public (for now)
+ */
+
 //@desc     Get all items from database
-//@route    GET api/items
+//@route    GET /api/v1/items
 //@access   Public
 const getItems = asyncHandler(async (req, res) => {
   const pageSize = 5;
@@ -29,7 +36,7 @@ const getItems = asyncHandler(async (req, res) => {
 });
 
 //@desc     Get all categories from database
-//@route    GET /api/items/categories
+//@route    GET /api/v1/items/categories
 //@access   Public
 const getCategories = asyncHandler(async (req, res) => {
   const categories = await Category.find({});
@@ -37,7 +44,7 @@ const getCategories = asyncHandler(async (req, res) => {
 });
 
 //@desc     Get item by id from database
-//@route    GET api/items/:id
+//@route    GET /api/v1/items/:id
 //@access   Public
 const getItemById = asyncHandler(async (req, res) => {
   const item = await Item.findById(req.params.id);
@@ -50,7 +57,7 @@ const getItemById = asyncHandler(async (req, res) => {
 });
 
 //@desc     create an item
-//@route    POST/api/items/create_item
+//@route    POST /api/v1/items/create_item
 //@access   Public (for now)
 
 const createItem = asyncHandler(async (req, res) => {

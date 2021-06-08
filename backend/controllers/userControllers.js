@@ -4,17 +4,17 @@ import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToken.js';
 import User from '../models/userModel.js';
 
-/**Routes:
- * POST   api/users/login       User Login (Auth & Token)   Public
- * POST   api/users             Register New User           Public
- * GET    api/users/profile     Return User Information     Private
- * PUT    api/users/profile     Update User Information     Private
- * GET    api/users             Get list of users           Admin
- * GET    api/users/:id         Get user by id              Admin
+/*Routes:
+ * POST   api/v1/users/login       User Login (Auth & Token)   Public
+ * POST   api/v1/users             Register New User           Public
+ * GET    api/v1/users/profile     Return User Information     Private
+ * PUT    api/v1/users/profile     Update User Information     Private
+ * GET    api/v1/users             Get list of users           Admin
+ * GET    api/v1/users/:id         Get user by id              Admin
  */
 
 //@desc     Auth user and get token
-//@route    POST api/users/login
+//@route    POST /api/v1/users/login
 //@access   Public
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -37,7 +37,7 @@ const authUser = asyncHandler(async (req, res) => {
 });
 
 //@desc     Register a new user
-//@route    POST/api/users
+//@route    POST /api/v1/users
 //@access   Public
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -72,7 +72,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 //@desc     Get user profile
-//@route    GET /api/users/profile
+//@route    GET /api/v1/users/profile
 //@access   Private
 const getUserLoginDetails = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
@@ -93,7 +93,7 @@ const getUserLoginDetails = asyncHandler(async (req, res) => {
 });
 
 //@desc     Update user profile
-//@route    PUT /api/users/profile
+//@route    PUT /api/v1/users/profile
 //@access   Private
 const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
@@ -125,16 +125,16 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-//@route    GET api/users
 //@desc     Get all users from database
+//@route    GET /api/v1/users
 //@access   Private - Admin Only - TODO
 const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({});
   res.json(users);
 });
 
-//@route    GET api/users/:ids
 //@desc     Get user by id from database
+//@route    GET /api/v1/users/:ids
 //@access   Private - Admin Only - TODO
 const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);

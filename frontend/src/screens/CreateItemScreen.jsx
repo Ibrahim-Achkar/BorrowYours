@@ -88,7 +88,7 @@ const CreateItemScreen = ({ history }) => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      const fileURL = await axios.post('/api/upload', formData, config);
+      const fileURL = await axios.post('/api/v1/upload', formData, config);
       setUploading(false);
       return fileURL.data;
     } catch (error) {

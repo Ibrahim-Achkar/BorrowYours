@@ -78,7 +78,7 @@ export default slice.reducer;
 export const login = (email, password) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: `api/users/login`,
+      url: `/api/v1/users/login`,
       data: { email, password },
       method: 'post',
       onStart: userLoginRequested.type,
@@ -92,7 +92,7 @@ export const login = (email, password) => (dispatch) => {
 export const register = (name, email, password) => (dispatch) => {
   dispatch(
     apiCallBegan({
-      url: `api/users`,
+      url: `/api/v1/users`,
       data: { name, email, password },
       method: 'post',
       onStart: userRegRequested.type,
@@ -108,7 +108,7 @@ export const updateUserProfile =
   (dispatch) => {
     dispatch(
       apiCallBegan({
-        url: `/api/users/profile`,
+        url: `/api/v1/users/profile`,
         data: { id, name, email, favouriteThing, password, confirmPassword },
         headers,
         method: 'put',

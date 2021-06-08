@@ -100,7 +100,7 @@ export const loadItems =
   (dispatch, getState) => {
     return dispatch(
       apiCallBegan({
-        url: `/api/items?keyword=${keyword}&pageNumber=${pageNumber}`,
+        url: `/api/v1/items?keyword=${keyword}&pageNumber=${pageNumber}`,
         method: 'get',
         onStart: itemsRequested.type,
         onSuccess: itemsReceived.type,
@@ -119,7 +119,7 @@ export const getAllItems = createSelector(
 export const loadCategories = () => (dispatch, getState) => {
   return dispatch(
     apiCallBegan({
-      url: `/api/items/categories`,
+      url: `/api/v1/items/categories`,
       method: 'get',
       onStart: categoriesRequested.type,
       onSuccess: categoriesReceived.type,
@@ -138,7 +138,7 @@ export const getAllCategories = createSelector(
 export const listItemDetails = (id) => (dispatch, getState) => {
   return dispatch(
     apiCallBegan({
-      url: `/api/items/${id}`,
+      url: `/api/v1/items/${id}`,
       method: 'get',
       onStart: itemRequested.type,
       onSuccess: itemReceived.type,
@@ -170,7 +170,7 @@ export const createItem =
   (dispatch) => {
     dispatch(
       apiCallBegan({
-        url: `/api/items/create_item`,
+        url: `/api/v1/items/create_item`,
         data: {
           user,
           name,

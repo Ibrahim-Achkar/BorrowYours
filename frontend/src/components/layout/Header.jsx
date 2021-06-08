@@ -13,10 +13,10 @@ const Header = ({ history }) => {
   const userLogin = useSelector((state) => state.features.userAuth.userLogin);
   const { name } = userLogin;
 
+  //TODO: fix logout redirect
   const logoutHandler = () => {
     dispatch(logout());
   };
-
   return (
     <header>
       <Navbar bg='light' expand='lg' collapseOnSelect>

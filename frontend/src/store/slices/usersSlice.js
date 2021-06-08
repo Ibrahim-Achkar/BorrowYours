@@ -30,18 +30,15 @@ const slice = createSlice({
 });
 
 //Exports
-export const {
-  usersReceived,
-  usersRequested,
-  usersRequestFailed,
-} = slice.actions;
+export const { usersReceived, usersRequested, usersRequestFailed } =
+  slice.actions;
 export default slice.reducer;
 
 //Action creators
 export const loadUsers = () => (dispatch, getState) => {
   return dispatch(
     apiCallBegan({
-      url: `/api/users`,
+      url: `/api/v1/users`,
       method: 'get',
       onStart: usersRequested.type,
       onSuccess: usersReceived.type,
