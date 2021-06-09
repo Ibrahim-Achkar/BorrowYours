@@ -11,7 +11,7 @@ import api from './middleware/apiMiddleware';
 const persistConfig = {
   key: 'root',
   storage: localForage,
-  whitelist: ['features'],
+  whitelist: ['features', 'entities'],
   stateReconciler: autoMergeLevel1,
 };
 

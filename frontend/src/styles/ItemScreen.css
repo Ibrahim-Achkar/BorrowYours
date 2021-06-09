@@ -1,0 +1,22 @@
+.calendar {
+  height: 15vmin;
+  background-color: lightblue;
+  width: auto;
+  text-align: center;
+}
+
+.heading {
+  padding: 1vmin;
+}
+
+.image {
+  padding: 1vmin;
+}
+
+.item-details {
+  padding: 2vmin;
+}
+
+.go-back {
+  padding: 1vmin;
+}

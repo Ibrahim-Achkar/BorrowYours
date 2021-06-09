@@ -1,8 +1,8 @@
 //package imports
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Image, ListGroup, Button, Form } from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Button } from 'react-bootstrap';
 
 //app imports
 import Message from '../components/utility/Message';
@@ -13,12 +13,11 @@ import {
   getAllItems,
   removeItem,
 } from '../store/slices/itemsSlice';
+import '../styles/ItemScreen.css';
 
 const ItemScreen = ({ match }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-
-  const [qty, setQty] = useState(1);
 
   useEffect(() => {
     dispatch(listItemDetails(match.params.id));
@@ -26,6 +25,26 @@ const ItemScreen = ({ match }) => {
 
   const items = useSelector(getAllItems);
   const { loading: itemLoading, error: itemError, item } = items;
+  const { countInStock, name, imageURL, description, brand, category, user } =
+    item;
+
+  /*TODO: This was all because React was not liking having objects in children & 
+  page was trying to load before user and category details were loaded into state
+  so the solution was to store these values in useRef().current because that persists
+  for the full liketime of the component
+  See if there is a better way of doing this haha*/
+  const userName = useRef('');
+  const categoryName = useRef('');
+
+  useEffect(() => {
+    if (category) {
+      categoryName.current = category.name;
+    }
+
+    if (user) {
+      userName.current = user.name;
+    }
+  }, [category, user]);
 
   const itemRemoveHandler = () => {
     dispatch(removeItem());
@@ -40,58 +59,76 @@ const ItemScreen = ({ match }) => {
         <Message variant='danger'>{itemError}</Message>
       ) : (
         <>
-          <Meta title={item.name} />
+          <Meta title={name} />
           <Row>
-            <Col md={6}>
-              <Image src={item.imageURL} alt={item.name} fluid />
+            <Col className='mt-4' md={4}>
+              <Row className='heading'>
+                <h3>{name}</h3>
+              </Row>
+              <Row className='image'>
+                <Image src={imageURL} alt={name} fluid />
+              </Row>
+              <Row className='go-back'>
+                <Button
+                  className='btn- btn-primary my-4 p-2'
+                  onClick={() => {
+                    itemRemoveHandler();
+                  }}>
+                  Go Back
+                </Button>
+              </Row>
             </Col>
-            <Col md={3}>
+            <Col className='mt-5' md={4}>
               <ListGroup variant='flush'>
-                <ListGroup.Item>
-                  <h3>{item.name}</h3>
-                </ListGroup.Item>
-                <ListGroup.Item>Description: {item.description}</ListGroup.Item>
-              </ListGroup>
-            </Col>
-            <Col md={3}>
-              <ListGroup variant='flush'>
-                <ListGroup.Item>
+                <ListGroup.Item className='item-details'>
                   <Row>
                     <Col>Owned by: </Col>
                     <Col>
-                      <strong>{item.user}</strong>
+                      {userName ? (
+                        <strong>{userName.current}</strong>
+                      ) : (
+                        <strong>Loading</strong>
+                      )}
                     </Col>
                   </Row>
                 </ListGroup.Item>
-                <ListGroup.Item>
+                <ListGroup.Item className='item-details'>
+                  <Row>
+                    <Col>Category: </Col>
+                    <Col>{categoryName.current}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item className='item-details'>
+                  <Row>
+                    <Col>Brand:</Col>
+                    <Col>{brand}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item className='item-details'>
+                  <Row>
+                    <Col>Description: </Col>
+                    <Col>{description}</Col>
+                  </Row>
+                </ListGroup.Item>
+              </ListGroup>
+            </Col>
+            <Col className='mt-5' md={4}>
+              <ListGroup variant='flush'>
+                <ListGroup.Item className='item-details'>
                   <Row>
                     <Col>Status: </Col>
                     <Col>
                       <strong>
-                        {item.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+                        {countInStock > 0 ? 'Available' : 'Not Available'}
                       </strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
-                {item.countInStock > 0 && (
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Qty</Col>
-                      <Col>
-                        <Form.Control
-                          as='select'
-                          value={qty}
-                          onChange={(e) => setQty(e.target.value)}>
-                          {[...Array(item.countInStock).keys()].map((x) => (
-                            <option key={x + 1} value={x + 1}>
-                              {x + 1}
-                            </option>
-                          ))}
-                        </Form.Control>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                )}
+                <ListGroup.Item>
+                  <div className='calendar'>
+                    <p>Calendar Widget Goes Here!</p>
+                  </div>
+                </ListGroup.Item>
                 <ListGroup.Item>
                   <Button
                     onClick={() => {
@@ -99,8 +136,8 @@ const ItemScreen = ({ match }) => {
                     }}
                     className='btn-block'
                     type='button'
-                    disabled={item.countInStock === 0}>
-                    Add to Cart
+                    disabled={countInStock === 0}>
+                    Borrow It!
                   </Button>
                 </ListGroup.Item>
               </ListGroup>
@@ -108,13 +145,6 @@ const ItemScreen = ({ match }) => {
           </Row>
         </>
       )}
-      <Button
-        className='btn- btn-primary my-4 p-2'
-        onClick={() => {
-          itemRemoveHandler();
-        }}>
-        Go Back
-      </Button>
     </>
   );
 };

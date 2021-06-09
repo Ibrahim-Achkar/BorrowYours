@@ -3,7 +3,6 @@ import React from 'react';
 import { Container } from 'react-bootstrap';
 
 //app imports
-
 import ItemTable from '../components/data/ItemTable';
 
 const ItemListScreen = ({ history, match }) => {

@@ -47,7 +47,12 @@ const getCategories = asyncHandler(async (req, res) => {
 //@route    GET /api/v1/items/:id
 //@access   Public
 const getItemById = asyncHandler(async (req, res) => {
-  const item = await Item.findById(req.params.id);
+  const item = await Item.findById(req.params.id)
+    .populate('user', 'name')
+    .populate('category', 'name', Category);
+
+  console.log(item);
+
   if (item) {
     res.json(item);
   } else {
