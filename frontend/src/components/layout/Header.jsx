@@ -16,6 +16,7 @@ const Header = ({ history }) => {
   //TODO: fix logout redirect
   const logoutHandler = () => {
     dispatch(logout());
+    history.push('/');
   };
   return (
     <header>

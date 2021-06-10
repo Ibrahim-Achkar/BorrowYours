@@ -18,7 +18,7 @@ import CreateItemScreen from './screens/CreateItemScreen';
 const App = () => {
   return (
     <Router>
-      <Header />
+      <Route render={({ history }) => <Header history={history} />} />
       <main className='py-3'>
         <Container>
           <Route path='/profile' render={ProfileScreen} exact />
