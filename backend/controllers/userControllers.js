@@ -130,7 +130,12 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 //@access   Private - Admin Only - TODO
 const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({});
-  res.json(users);
+  if (users) {
+    res.json(users);
+  } else {
+    res.status(401);
+    throw new Error(`No users found 😭`);
+  }
 });
 
 //@desc     Get user by id from database
@@ -142,7 +147,7 @@ const getUserById = asyncHandler(async (req, res) => {
     res.json(user);
   } else {
     res.status(404);
-    throw new Error('User not found');
+    throw new Error('User not found 😭');
   }
 });
 
