@@ -32,6 +32,11 @@ const App = () => {
           <Route path='/items/:id' component={ItemScreen} exact />
           <Route path='/items' component={ItemListScreen} exact />
           <Route path='/items/page/:pageNumber' render={ItemListScreen} exact />
+          <Route
+            path='/items/:keyword/page/:pageNumber'
+            render={ItemListScreen}
+            exact
+          />
           <Route path='/create_item' component={CreateItemScreen} />
           <Route path='/users' render={UsersScreen} />
           <Route path='/' render={HomeScreen} exact />

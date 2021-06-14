@@ -24,7 +24,7 @@ const getItems = asyncHandler(async (req, res) => {
           $options: 'i',
         },
       }
-    : {}; //if no keyword, return empty object
+    : {};
   const count = await Item.countDocuments({ ...keyword });
   const items = await Item.find({ ...keyword })
     .limit(pageSize)

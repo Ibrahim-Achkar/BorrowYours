@@ -29,6 +29,7 @@ const ItemTable = ({ history, match, name }) => {
   const userAuth = useSelector((state) => state.features.userAuth.userLogin);
   const { name: userName } = userAuth;
   let filteredList = null;
+  let reactList = null;
 
   if (regex.test(location.pathname)) {
     filteredList = list.filter((item) => {
@@ -36,17 +37,19 @@ const ItemTable = ({ history, match, name }) => {
     });
   }
 
-  let reactList = null;
-
   if (filteredList) {
     reactList = filteredList;
   } else {
     reactList = list;
   }
 
+  //implementing search
+  const keyword = match.params.keyword;
+
+  //dispatching loaditems with the keyword and correct page number
   useEffect(() => {
-    dispatch(loadItems('', pageNumber));
-  }, [dispatch, pageNumber, userName]);
+    dispatch(loadItems(keyword, pageNumber));
+  }, [dispatch, keyword, pageNumber, userName]);
 
   return (
     <>
