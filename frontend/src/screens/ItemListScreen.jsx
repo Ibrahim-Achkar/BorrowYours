@@ -1,15 +1,21 @@
 //package imports
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 
 //app imports
 import ItemTable from '../components/data/ItemTable';
+import SearchBox from '../components/data/SearchBox';
 
 const ItemListScreen = ({ history, match }) => {
   return (
-    <Container>
-      <ItemTable history={history} match={match} />
-    </Container>
+    <>
+      <Container>
+        <Row className='mt-4 mb-4 ml-0 mr-0'>
+          <SearchBox history={history} />
+        </Row>
+        <ItemTable history={history} match={match} />
+      </Container>
+    </>
   );
 };
 

@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 //app imports
 import SearchBox from '../components/data/SearchBox';
 
-const HomeScreen = () => {
+const HomeScreen = ({ history }) => {
   return (
     <>
       <Container fluid>
@@ -20,7 +20,7 @@ const HomeScreen = () => {
         </Row>
         <Row>
           <Col className='mt-4 mb-4 d-flex justify-content-center'>
-            <SearchBox />
+            <SearchBox history={history} />
           </Col>
         </Row>
         <Row className='mt-4 mb-4'>
