@@ -10,6 +10,7 @@ const slice = createSlice({
   initialState: {
     list: [],
     loading: false,
+    success: null,
     lastFetch: null,
     error: null,
   },
@@ -17,14 +18,18 @@ const slice = createSlice({
     //requesting list of users
     usersRequested: (users, action) => {
       users.loading = true;
+      users.error = null;
+      users.success = null;
     },
     usersReceived: (users, action) => {
       users.list = action.payload;
       users.loading = false;
+      users.success = true;
       users.lastFetch = new Date().toString();
     },
     usersRequestFailed: (users, action) => {
       users.loading = false;
+      users.error = action.payload;
     },
   },
 });
@@ -36,15 +41,19 @@ export default slice.reducer;
 
 //Action creators
 export const loadUsers = () => (dispatch, getState) => {
-  return dispatch(
-    apiCallBegan({
-      url: `/api/v1/users`,
-      method: 'get',
-      onStart: usersRequested.type,
-      onSuccess: usersReceived.type,
-      onError: usersRequestFailed.type,
-    })
-  );
+  try {
+    return dispatch(
+      apiCallBegan({
+        url: `/api/v1/users`,
+        method: 'get',
+        onStart: usersRequested.type,
+        onSuccess: usersReceived.type,
+        onError: usersRequestFailed.type,
+      })
+    );
+  } catch (error) {
+    return error;
+  }
 };
 
 //Memoisation functions

@@ -14,6 +14,7 @@ const slice = createSlice({
     loading: false,
     lastFetch: null,
     error: null,
+    success: null,
     page: '',
     pages: '',
   },
@@ -22,40 +23,54 @@ const slice = createSlice({
     itemsRequested: (items, action) => {
       items.loading = true;
       items.item = {}; //TODO check if this is a good thing to do here
+      items.error = null;
+      items.success = null;
     },
     itemsReceived: (items, action) => {
       items.list = action.payload.items;
       items.page = action.payload.page;
       items.pages = action.payload.pages;
-      items.loading = false;
       items.lastFetch = new Date().toString();
+      items.loading = false;
+      items.success = true;
+      items.error = null;
     },
     itemsRequestFailed: (items, action) => {
       items.loading = false;
+      items.error = action.payload;
     },
 
     //requesting item categories
     categoriesRequested: (items, action) => {
       items.loading = true;
+      items.error = null;
+      items.success = null;
     },
     categoriesReceived: (items, action) => {
       items.categories = action.payload;
       items.loading = false;
+      items.success = true;
+      items.error = null;
     },
     categoriesRequestFailed: (items, action) => {
       items.loading = false;
+      items.error = action.payload;
     },
 
     //requesting an item
     itemRequested: (items, action) => {
       items.loading = true;
+      items.error = null;
+      items.success = null;
     },
     itemReceived: (items, action) => {
       items.item = action.payload;
       items.loading = false;
+      items.error = null;
     },
     itemRequestFailed: (items, action) => {
       items.loading = false;
+      items.error = action.payload;
     },
     itemRemove: (items, action) => {
       items.item = {};
@@ -64,13 +79,18 @@ const slice = createSlice({
     //creating an item
     itemCreateRequested: (items, action) => {
       items.loading = true;
+      items.error = null;
+      items.success = null;
     },
     itemCreateReceived: (items, action) => {
       items.item = action.payload;
       items.loading = false;
+      items.success = true;
+      items.error = null;
     },
     itemCreateRequestFailed: (items, action) => {
       items.loading = false;
+      items.error = action.payload;
     },
   },
 });
@@ -98,15 +118,19 @@ export default slice.reducer;
 export const loadItems =
   (keyword = '', pageNumber = '') =>
   (dispatch, getState) => {
-    return dispatch(
-      apiCallBegan({
-        url: `/api/v1/items?keyword=${keyword}&pageNumber=${pageNumber}`,
-        method: 'get',
-        onStart: itemsRequested.type,
-        onSuccess: itemsReceived.type,
-        onError: itemsRequestFailed.type,
-      })
-    );
+    try {
+      return dispatch(
+        apiCallBegan({
+          url: `/api/v1/items?keyword=${keyword}&pageNumber=${pageNumber}`,
+          method: 'get',
+          onStart: itemsRequested.type,
+          onSuccess: itemsReceived.type,
+          onError: itemsRequestFailed.type,
+        })
+      );
+    } catch (error) {
+      return error;
+    }
   };
 
 //Items Memoisation function
@@ -117,15 +141,19 @@ export const getAllItems = createSelector(
 
 //get all categories
 export const loadCategories = () => (dispatch, getState) => {
-  return dispatch(
-    apiCallBegan({
-      url: `/api/v1/items/categories`,
-      method: 'get',
-      onStart: categoriesRequested.type,
-      onSuccess: categoriesReceived.type,
-      onError: categoriesRequestFailed.type,
-    })
-  );
+  try {
+    return dispatch(
+      apiCallBegan({
+        url: `/api/v1/items/categories`,
+        method: 'get',
+        onStart: categoriesRequested.type,
+        onSuccess: categoriesReceived.type,
+        onError: categoriesRequestFailed.type,
+      })
+    );
+  } catch (error) {
+    return error;
+  }
 };
 
 //Categories memoisation function
@@ -136,15 +164,19 @@ export const getAllCategories = createSelector(
 
 //get single item details
 export const listItemDetails = (id) => (dispatch, getState) => {
-  return dispatch(
-    apiCallBegan({
-      url: `/api/v1/items/${id}`,
-      method: 'get',
-      onStart: itemRequested.type,
-      onSuccess: itemReceived.type,
-      onError: itemRequestFailed.type,
-    })
-  );
+  try {
+    return dispatch(
+      apiCallBegan({
+        url: `/api/v1/items/${id}`,
+        method: 'get',
+        onStart: itemRequested.type,
+        onSuccess: itemReceived.type,
+        onError: itemRequestFailed.type,
+      })
+    );
+  } catch (error) {
+    return error;
+  }
 };
 
 //removing item from state
@@ -168,24 +200,28 @@ export const createItem =
     headers
   ) =>
   (dispatch) => {
-    dispatch(
-      apiCallBegan({
-        url: `/api/v1/items/create_item`,
-        data: {
-          user,
-          name,
-          imageURL,
-          brand,
-          category,
-          description,
-          barcode,
-          countInStock,
-        },
-        headers,
-        method: 'post',
-        onStart: itemCreateRequested.type,
-        onSuccess: itemCreateReceived.type,
-        onError: itemCreateRequestFailed.type,
-      })
-    );
+    try {
+      dispatch(
+        apiCallBegan({
+          url: `/api/v1/items/create_item`,
+          data: {
+            user,
+            name,
+            imageURL,
+            brand,
+            category,
+            description,
+            barcode,
+            countInStock,
+          },
+          headers,
+          method: 'post',
+          onStart: itemCreateRequested.type,
+          onSuccess: itemCreateReceived.type,
+          onError: itemCreateRequestFailed.type,
+        })
+      );
+    } catch (error) {
+      return error;
+    }
   };
