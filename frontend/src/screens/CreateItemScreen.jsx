@@ -9,6 +9,7 @@ import Loader from '../components/utility/Loader';
 import {
   loadCategories,
   getAllCategories,
+  getAllItems,
   createItem,
 } from '../store/slices/itemsSlice';
 
@@ -16,7 +17,7 @@ const CreateItemScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const userAuth = useSelector((state) => state.features.userAuth);
-  const { loading, success, error, userLogin } = userAuth;
+  const { userLogin } = userAuth;
   const item = useSelector((state) => state.entities.items.item);
 
   useEffect(() => {
@@ -47,9 +48,16 @@ const CreateItemScreen = ({ history }) => {
   const [description, setDescription] = useState('');
   const [barcode, setBarcode] = useState('');
   const [countInStock, setCountInStock] = useState('');
-  const [message] = useState(null);
+  const [message, setMessage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadFile, setupLoadFile] = useState('');
+
+  const items = useSelector(getAllItems);
+  const {
+    success: itemSuccess,
+    loading: itemLoading,
+    error: itemError,
+  } = items;
 
   //Submission of headers and data through updateUserProfile
   const headers = {
@@ -97,10 +105,20 @@ const CreateItemScreen = ({ history }) => {
     }
   };
 
+  //TODO Delete image if database entry creation fails
   const submitHandler = async (e) => {
     e.preventDefault();
     let path = await uploadFileHandler(uploadFile);
-    dispatch(createItem({ ...data, imageURL: path }, headers));
+    if (path) {
+      try {
+        setMessage('');
+        dispatch(createItem({ ...data, imageURL: path }, headers));
+      } catch (error) {
+        setMessage(error);
+      }
+    } else {
+      setMessage(`File upload error`);
+    }
   };
 
   return (
@@ -108,9 +126,8 @@ const CreateItemScreen = ({ history }) => {
       <Col>
         <h1>Create Item 🎁</h1>
         {message && <Message variant='danger'>{message}</Message>}
-        {error && <Message variant='danger'>{error}</Message>}
-        {success && <Message variant='success'>Item Created!</Message>}
-        {loading && <Loader />}
+        {itemError && <Message variant='danger'>{itemError}</Message>}
+        {itemLoading && <Loader />}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId='name'>
             <Form.Label>Item Name</Form.Label>

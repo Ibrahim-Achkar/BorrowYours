@@ -32,7 +32,12 @@ const getItems = asyncHandler(async (req, res) => {
     .populate('user', 'name')
     .populate('category', 'name', Category);
 
-  res.json({ items, page, pages: Math.ceil(count / pageSize) });
+  if (items) {
+    res.json({ items, page, pages: Math.ceil(count / pageSize) });
+  } else {
+    res.status(401);
+    throw new Error(`Items not found 🔍`);
+  }
 });
 
 //@desc     Get all categories from database
@@ -40,7 +45,11 @@ const getItems = asyncHandler(async (req, res) => {
 //@access   Public
 const getCategories = asyncHandler(async (req, res) => {
   const categories = await Category.find({});
-  res.json(categories);
+  if (categories) {
+    res.json(categories);
+  } else {
+    throw new Error(`Categories not found 🔍`);
+  }
 });
 
 //@desc     Get item by id from database
@@ -51,10 +60,12 @@ const getItemById = asyncHandler(async (req, res) => {
     .populate('user', 'name')
     .populate('category', 'name', Category);
 
-  console.log(item);
-
   if (item) {
-    res.json(item);
+    res.json({
+      ...item._doc, //spread the first level of item values into an empty object (ie name, isAvailable, etc)
+      category: item.category.name, //replace the category object with just the category name
+      user: item.user.name, //replace the user object with just the user name
+    }); //after all of this have a flat object which won't trigger any React Children as Object errors
   } else {
     res.status(404);
     throw new Error('Item not found');
@@ -84,8 +95,12 @@ const createItem = asyncHandler(async (req, res) => {
   const item = await mongoItem(req.body);
 
   const createdItem = await item.save();
-
-  res.status(201).json(createdItem);
+  if (createdItem) {
+    res.status(201).json(createdItem);
+  } else {
+    res.status(400);
+    throw new Error(`Invalid Item Data`);
+  }
 });
 
 export { getItems, getCategories, getItemById, createItem };

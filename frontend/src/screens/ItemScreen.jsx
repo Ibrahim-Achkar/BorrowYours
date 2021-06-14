@@ -1,5 +1,5 @@
 //package imports
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Image, ListGroup, Button } from 'react-bootstrap';
@@ -27,24 +27,6 @@ const ItemScreen = ({ match }) => {
   const { loading: itemLoading, error: itemError, item } = items;
   const { countInStock, name, imageURL, description, brand, category, user } =
     item;
-
-  /*TODO: This was all because React was not liking having objects in children & 
-  page was trying to load before user and category details were loaded into state
-  so the solution was to store these values in useRef().current because that persists
-  for the full liketime of the component
-  See if there is a better way of doing this haha*/
-  const userName = useRef('');
-  const categoryName = useRef('');
-
-  useEffect(() => {
-    if (category) {
-      categoryName.current = category.name;
-    }
-
-    if (user) {
-      userName.current = user.name;
-    }
-  }, [category, user]);
 
   const itemRemoveHandler = () => {
     dispatch(removeItem());
@@ -83,19 +65,13 @@ const ItemScreen = ({ match }) => {
                 <ListGroup.Item className='item-details'>
                   <Row>
                     <Col>Owned by: </Col>
-                    <Col>
-                      {userName ? (
-                        <strong>{userName.current}</strong>
-                      ) : (
-                        <strong>Loading</strong>
-                      )}
-                    </Col>
+                    <Col>{user}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item className='item-details'>
                   <Row>
                     <Col>Category: </Col>
-                    <Col>{categoryName.current}</Col>
+                    <Col>{category}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item className='item-details'>

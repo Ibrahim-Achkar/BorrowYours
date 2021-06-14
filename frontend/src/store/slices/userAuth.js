@@ -7,6 +7,7 @@ const slice = createSlice({
   initialState: {
     loading: false,
     error: null,
+    success: null,
     userLogin: {},
   },
   reducers: {
@@ -14,10 +15,12 @@ const slice = createSlice({
     userLoginRequested: (userAuth, action) => {
       userAuth.loading = true;
       userAuth.error = null;
+      userAuth.success = null;
     },
     userLoginReceived: (userAuth, action) => {
       userAuth.loading = false;
       userAuth.userLogin = action.payload;
+      userAuth.success = true;
     },
     userLoginFailed: (userAuth, action) => {
       userAuth.loading = false;
@@ -31,10 +34,12 @@ const slice = createSlice({
     userRegRequested: (userAuth, action) => {
       userAuth.loading = true;
       userAuth.error = null;
+      userAuth.success = null;
     },
     userRegReceived: (userAuth, action) => {
       userAuth.loading = false;
       userAuth.userLogin = action.payload;
+      userAuth.success = true;
     },
     userRegFailed: (userAuth, action) => {
       userAuth.loading = false;
@@ -45,10 +50,12 @@ const slice = createSlice({
     userUpdateRequested: (userAuth, action) => {
       userAuth.loading = true;
       userAuth.error = null;
+      userAuth.success = null;
     },
     userUpdateReceived: (userAuth, action) => {
       userAuth.loading = false;
       userAuth.userLogin = action.payload;
+      userAuth.success = true;
     },
     userUpdateFailed: (userAuth, action) => {
       userAuth.loading = false;
@@ -76,47 +83,59 @@ export default slice.reducer;
 
 //Logging in
 export const login = (email, password) => (dispatch) => {
-  return dispatch(
-    apiCallBegan({
-      url: `/api/v1/users/login`,
-      data: { email, password },
-      method: 'post',
-      onStart: userLoginRequested.type,
-      onSuccess: userLoginReceived.type,
-      onError: userLoginFailed.type,
-    })
-  );
+  try {
+    return dispatch(
+      apiCallBegan({
+        url: `/api/v1/users/login`,
+        data: { email, password },
+        method: 'post',
+        onStart: userLoginRequested.type,
+        onSuccess: userLoginReceived.type,
+        onError: userLoginFailed.type,
+      })
+    );
+  } catch (error) {
+    return error;
+  }
 };
 
 //Registering new user
 export const register = (name, email, password) => (dispatch) => {
-  dispatch(
-    apiCallBegan({
-      url: `/api/v1/users`,
-      data: { name, email, password },
-      method: 'post',
-      onStart: userRegRequested.type,
-      onSuccess: userRegReceived.type,
-      onError: userRegFailed.type,
-    })
-  );
+  try {
+    dispatch(
+      apiCallBegan({
+        url: `/api/v1/users`,
+        data: { name, email, password },
+        method: 'post',
+        onStart: userRegRequested.type,
+        onSuccess: userRegReceived.type,
+        onError: userRegFailed.type,
+      })
+    );
+  } catch (error) {
+    return error;
+  }
 };
 
 //updating user
 export const updateUserProfile =
   ({ id, name, email, favouriteThing, password, confirmPassword }, headers) =>
   (dispatch) => {
-    dispatch(
-      apiCallBegan({
-        url: `/api/v1/users/profile`,
-        data: { id, name, email, favouriteThing, password, confirmPassword },
-        headers,
-        method: 'put',
-        onStart: userUpdateRequested.type,
-        onSuccess: userUpdateReceived.type,
-        onError: userUpdateFailed.type,
-      })
-    );
+    try {
+      dispatch(
+        apiCallBegan({
+          url: `/api/v1/users/profile`,
+          data: { id, name, email, favouriteThing, password, confirmPassword },
+          headers,
+          method: 'put',
+          onStart: userUpdateRequested.type,
+          onSuccess: userUpdateReceived.type,
+          onError: userUpdateFailed.type,
+        })
+      );
+    } catch (error) {
+      return error;
+    }
   };
 
 export const logout = () => (dispatch) => {
