@@ -51,13 +51,10 @@ const CreateItemScreen = ({ history }) => {
   const [message, setMessage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadFile, setupLoadFile] = useState('');
+  const [validated, setValidated] = useState(false);
 
   const items = useSelector(getAllItems);
-  const {
-    success: itemSuccess,
-    loading: itemLoading,
-    error: itemError,
-  } = items;
+  const { loading: itemLoading, error: itemError } = items;
 
   //Submission of headers and data through updateUserProfile
   const headers = {
@@ -107,17 +104,28 @@ const CreateItemScreen = ({ history }) => {
 
   //TODO Delete image if database entry creation fails
   const submitHandler = async (e) => {
-    e.preventDefault();
-    let path = await uploadFileHandler(uploadFile);
-    if (path) {
-      try {
-        setMessage('');
-        dispatch(createItem({ ...data, imageURL: path }, headers));
-      } catch (error) {
-        setMessage(error);
+    const form = e.currentTarget;
+
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    setValidated(true);
+
+    if (form.checkValidity() === true) {
+      e.preventDefault();
+      let path = await uploadFileHandler(uploadFile);
+      if (path) {
+        try {
+          setMessage('');
+          dispatch(createItem({ ...data, imageURL: path }, headers));
+        } catch (error) {
+          setMessage(error);
+        }
+      } else {
+        setMessage(`File upload error`);
       }
-    } else {
-      setMessage(`File upload error`);
     }
   };
 
@@ -128,22 +136,38 @@ const CreateItemScreen = ({ history }) => {
         {message && <Message variant='danger'>{message}</Message>}
         {itemError && <Message variant='danger'>{itemError}</Message>}
         {itemLoading && <Loader />}
-        <Form onSubmit={submitHandler}>
+        <Form noValidate validated={validated} onSubmit={submitHandler}>
           <Form.Group controlId='name'>
             <Form.Label>Item Name</Form.Label>
             <Form.Control
+              required
               type='name'
               placeholder='enter name'
               value={name}
-              onChange={(e) => setName(e.target.value)}></Form.Control>
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Form.Control.Feedback type='valid'>
+              You got it 🤩
+            </Form.Control.Feedback>
+            <Form.Control.Feedback type='invalid'>
+              please enter a name!
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId='image'>
             <Form.Label>Image</Form.Label>
             <Form.Control
+              required
               type='text'
               placeholder='image path'
               value={imageURL}
-              onChange={(e) => setImageURL(e.target.value)}></Form.Control>
+              onChange={(e) => setImageURL(e.target.value)}
+            />
+            <Form.Control.Feedback type='valid'>
+              You got it 🤩
+            </Form.Control.Feedback>
+            <Form.Control.Feedback type='invalid'>
+              please add an image!
+            </Form.Control.Feedback>
             <Form.File
               id='image-file'
               label='Choose File'
@@ -157,14 +181,23 @@ const CreateItemScreen = ({ history }) => {
           <Form.Group controlId='brand'>
             <Form.Label>Brand</Form.Label>
             <Form.Control
+              required
               type='brand'
               placeholder='enter brand'
               value={brand}
-              onChange={(e) => setBrand(e.target.value)}></Form.Control>
+              onChange={(e) => setBrand(e.target.value)}
+            />
+            <Form.Control.Feedback type='valid'>
+              You got it 🤩
+            </Form.Control.Feedback>
+            <Form.Control.Feedback type='invalid'>
+              please add a brand!
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId='category'>
             <Form.Label>Category</Form.Label>
             <Form.Control
+              required
               as='select'
               type='category'
               placeholder='enter Category'
@@ -178,10 +211,18 @@ const CreateItemScreen = ({ history }) => {
           <Form.Group controlId='description'>
             <Form.Label>Description</Form.Label>
             <Form.Control
+              required
               type='description'
               placeholder='confirm description'
               value={description}
-              onChange={(e) => setDescription(e.target.value)}></Form.Control>
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <Form.Control.Feedback type='valid'>
+              You got it 🤩
+            </Form.Control.Feedback>
+            <Form.Control.Feedback type='invalid'>
+              please add a description!
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId='barcode'>
             <Form.Label>Barcode</Form.Label>
@@ -194,10 +235,18 @@ const CreateItemScreen = ({ history }) => {
           <Form.Group controlId='countInStock'>
             <Form.Label>Number Available</Form.Label>
             <Form.Control
+              required
               type='countInStock'
               placeholder='how many of these items?'
               value={countInStock}
-              onChange={(e) => setCountInStock(e.target.value)}></Form.Control>
+              onChange={(e) => setCountInStock(e.target.value)}
+            />
+            <Form.Control.Feedback type='valid'>
+              You got it 🤩
+            </Form.Control.Feedback>
+            <Form.Control.Feedback type='invalid'>
+              please add an amount!
+            </Form.Control.Feedback>
           </Form.Group>
           <Button type='submit' variant='primary'>
             Create Item

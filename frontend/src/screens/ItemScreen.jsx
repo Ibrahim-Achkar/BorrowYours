@@ -8,6 +8,7 @@ import { Row, Col, Image, ListGroup, Button } from 'react-bootstrap';
 import Message from '../components/utility/Message';
 import Loader from '../components/utility/Loader';
 import Meta from '../components/utility/Meta';
+import BookingCalendar from '../components/data/BookingCalendar';
 import {
   listItemDetails,
   getAllItems,
@@ -101,20 +102,7 @@ const ItemScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <div className='calendar'>
-                    <p>Calendar Widget Goes Here!</p>
-                  </div>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Button
-                    onClick={() => {
-                      console.log(`addToCartHandler`);
-                    }}
-                    className='btn-block'
-                    type='button'
-                    disabled={countInStock === 0}>
-                    Borrow It!
-                  </Button>
+                  <BookingCalendar />
                 </ListGroup.Item>
               </ListGroup>
             </Col>
