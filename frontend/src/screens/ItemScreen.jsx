@@ -26,8 +26,22 @@ const ItemScreen = ({ match }) => {
 
   const items = useSelector(getAllItems);
   const { loading: itemLoading, error: itemError, item } = items;
-  const { countInStock, name, imageURL, description, brand, category, user } =
-    item;
+  const {
+    countInStock,
+    name,
+    imageURL,
+    description,
+    brand,
+    category,
+    user,
+    userId: ownerUserId,
+    _id: itemId,
+    bookedDates,
+  } = item;
+
+  const userAuth = useSelector((state) => state.features.userAuth);
+  const { userLogin } = userAuth;
+  const { _id: reserverUserId, token: reserveUserToken } = userLogin;
 
   const itemRemoveHandler = () => {
     dispatch(removeItem());
@@ -102,7 +116,13 @@ const ItemScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <BookingCalendar />
+                  <BookingCalendar
+                    ownerUserId={ownerUserId}
+                    itemId={itemId}
+                    reserverUserId={reserverUserId}
+                    reserveUserToken={reserveUserToken}
+                    bookedDates={bookedDates}
+                  />
                 </ListGroup.Item>
               </ListGroup>
             </Col>

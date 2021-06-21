@@ -9,6 +9,7 @@ import colors from 'colors';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import itemRoutes from './routes/itemRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 
 //Bring in global variables
@@ -36,6 +37,7 @@ const PORT = process.env.PORT || 5000;
 //Mount routes
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/items', itemRoutes);
+app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/upload', uploadRoutes);
 
 //Getting access to uploads folder

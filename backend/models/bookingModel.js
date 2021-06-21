@@ -2,16 +2,16 @@ import mongoose from 'mongoose';
 
 const bookingSchema = mongoose.Schema(
   {
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      requried: true,
-      ref: 'User',
-    },
-
     item: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'Item',
+    },
+
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      requried: true,
+      ref: 'User',
     },
 
     reserver: {
@@ -45,6 +45,18 @@ const bookingSchema = mongoose.Schema(
     returnedAt: {
       type: Date,
       required: false,
+    },
+
+    isCancelled: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+
+    isComplete: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {
