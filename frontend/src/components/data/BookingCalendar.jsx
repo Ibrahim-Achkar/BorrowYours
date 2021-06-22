@@ -84,9 +84,18 @@ const BookingCalendar = ({
         reservedDates.push(date.toString());
       });
     } else {
-      if (reserveData === calValue) {
-        return alert`Sorry, this item is reserved for today!`;
+      /*because the current date on page load will be the date to the current second, 
+      a straight compare of today's date to the reserveData date will return false even if the days match
+      slicing to index 15 will allow comparison of dates and not time
+      this is not an issue when comparing within a range because isWithinInterval handles it*/
+      for (let date of bookedDatesToISO) {
+        if (
+          date.toString().slice(0, 15) === reserveData.toString().slice(0, 15)
+        ) {
+          return alert`Sorry, this item is reserved for today!`;
+        }
       }
+
       reservedDates.push(reserveData.toString());
     }
     try {
