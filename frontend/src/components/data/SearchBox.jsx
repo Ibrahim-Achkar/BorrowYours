@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
-const SearchBox = ({ history }) => {
+const SearchBox = ({ history, list }) => {
   const [keyword, setKeyword] = useState('');
 
   let pageNumber = 1;
@@ -12,7 +12,7 @@ const SearchBox = ({ history }) => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (keyword.trim()) {
-      history.push(`/items/${keyword}/page/${pageNumber}`);
+      history.push(`/${list}/${keyword}/page/${pageNumber}`);
     } else {
       history.push(`/`);
     }
@@ -24,7 +24,7 @@ const SearchBox = ({ history }) => {
         type='text'
         name='q'
         onChange={(e) => setKeyword(e.target.value)}
-        placeholder='Search Items...'></Form.Control>
+        placeholder='Search...'></Form.Control>
       <Button type='submit' variant='outline-success' className='p-2'>
         Search
       </Button>

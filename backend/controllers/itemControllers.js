@@ -73,7 +73,13 @@ const getItemById = asyncHandler(async (req, res) => {
   });
 
   const filtered = bookings.filter((booking) => {
-    return booking.item;
+    if (
+      booking.item &&
+      booking.isCancelled === false && //if booking is not cancelled we want to gray out that date in the calendar
+      booking.isComplete === false //if booking is not complete we want to gray out that date in the calendar
+    ) {
+      return booking;
+    }
   });
 
   const bookedDates = [];

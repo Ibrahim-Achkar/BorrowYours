@@ -84,6 +84,9 @@ const BookingCalendar = ({
         reservedDates.push(date.toString());
       });
     } else {
+      if (reserveData === calValue) {
+        return alert`Sorry, this item is reserved for today!`;
+      }
       reservedDates.push(reserveData.toString());
     }
     try {

@@ -1,5 +1,5 @@
 //package imports
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 //app imports
 import { apiCallBegan } from '../actions/apiActions';
 
@@ -15,6 +15,27 @@ const slice = createSlice({
     pages: '',
   },
   reducers: {
+    //requesting list of items
+    bookingsRequested: (bookings, action) => {
+      bookings.loading = true;
+      bookings.item = {};
+      bookings.error = null;
+      bookings.success = null;
+    },
+    bookingsReceived: (bookings, action) => {
+      bookings.list = action.payload.bookings;
+      bookings.page = action.payload.page;
+      bookings.pages = action.payload.pages;
+      bookings.lastFetch = new Date().toString();
+      bookings.loading = false;
+      bookings.success = true;
+      bookings.error = null;
+    },
+    bookingsRequestFailed: (bookings, action) => {
+      bookings.loading = false;
+      bookings.error = action.payload;
+    },
+
     //creating a booking
     bookingCreateRequested: (bookings, action) => {
       bookings.loading = true;
@@ -39,8 +60,37 @@ export const {
   bookingCreateRequested,
   bookingCreateReceived,
   bookingCreateRequestFailed,
+  bookingsRequested,
+  bookingsReceived,
+  bookingsRequestFailed,
 } = slice.actions;
 export default slice.reducer;
+
+//Action creators
+//load items into state
+export const loadBookings =
+  (keyword = '', pageNumber = '') =>
+  (dispatch, getState) => {
+    try {
+      return dispatch(
+        apiCallBegan({
+          url: `/api/v1/bookings?keyword=${keyword}&pageNumber=${pageNumber}`,
+          method: 'get',
+          onStart: bookingsRequested.type,
+          onSuccess: bookingsReceived.type,
+          onError: bookingsRequestFailed.type,
+        })
+      );
+    } catch (error) {
+      return error;
+    }
+  };
+
+//Items Memoisation function
+export const getAllBookings = createSelector(
+  (state) => state.features.bookings,
+  (bookings) => bookings
+);
 
 //Action creators
 //Create a booking
