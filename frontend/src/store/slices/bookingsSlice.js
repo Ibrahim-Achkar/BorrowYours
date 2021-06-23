@@ -15,7 +15,7 @@ const slice = createSlice({
     pages: '',
   },
   reducers: {
-    //requesting list of items
+    //requesting list of bookings
     bookingsRequested: (bookings, action) => {
       bookings.loading = true;
       bookings.item = {};
@@ -34,6 +34,25 @@ const slice = createSlice({
     bookingsRequestFailed: (bookings, action) => {
       bookings.loading = false;
       bookings.error = action.payload;
+    },
+
+    //requesting an booking
+    bookingRequested: (bookings, action) => {
+      bookings.loading = true;
+      bookings.error = null;
+      bookings.success = null;
+    },
+    bookingReceived: (bookings, action) => {
+      bookings.booking = action.payload;
+      bookings.loading = false;
+      bookings.error = null;
+    },
+    bookingRequestFailed: (bookings, action) => {
+      bookings.loading = false;
+      bookings.error = action.payload;
+    },
+    bookingRemove: (bookings, action) => {
+      bookings.booking = {};
     },
 
     //creating a booking
@@ -63,6 +82,10 @@ export const {
   bookingsRequested,
   bookingsReceived,
   bookingsRequestFailed,
+  bookingRequested,
+  bookingReceived,
+  bookingRequestFailed,
+  bookingRemove,
 } = slice.actions;
 export default slice.reducer;
 
@@ -86,11 +109,33 @@ export const loadBookings =
     }
   };
 
-//Items Memoisation function
+//Bookings Memoisation function
 export const getAllBookings = createSelector(
   (state) => state.features.bookings,
   (bookings) => bookings
 );
+
+//get single booking details
+export const listBookingDetails = (id) => (dispatch, getState) => {
+  try {
+    return dispatch(
+      apiCallBegan({
+        url: `/api/v1/bookings/${id}`,
+        method: 'get',
+        onStart: bookingRequested.type,
+        onSuccess: bookingReceived.type,
+        onError: bookingRequestFailed.type,
+      })
+    );
+  } catch (error) {
+    return error;
+  }
+};
+
+//removing booking from state
+export const removeBooking = () => (dispatch) => {
+  return dispatch(bookingRemove());
+};
 
 //Action creators
 //Create a booking

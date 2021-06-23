@@ -6,8 +6,8 @@ import User from '../models/userModel.js';
 import Booking from '../models/bookingModel.js';
 
 /*Routes:
- * POST   /api/v1/bookings/create_booking  Create a booking               Public (for now)
  * GET    /api/v1/bookings/getBookings     Get bookings from database     Public (for now)
+ * POST   /api/v1/bookings/create_booking  Create a booking               Public (for now)
  */
 
 //@desc     Get bookings from database
@@ -42,10 +42,35 @@ const getBookings = asyncHandler(async (req, res) => {
   }
 });
 
+//@desc     Get booking by id from database
+//@route    GET /api/v1/bookings/:id
+//@access   Public
+const getBookingById = asyncHandler(async (req, res) => {
+  const booking = await Booking.findById(req.params.id)
+    .populate('item', 'name', Item)
+    .populate('owner', 'name', User)
+    .populate('reserver', 'name', User);
+
+  const { item, owner, reserver } = booking;
+
+  const data = {
+    ...booking._doc,
+    item: item.name,
+    owner: owner.name,
+    reserver: reserver.name,
+  };
+
+  if (booking) {
+    res.json(data);
+  } else {
+    res.status(404);
+    throw new Error('Booking not found');
+  }
+});
+
 //@desc     create a booking
 //@route    POST /api/v1/bookings/create_booking
 //@access   Public (for now)
-
 const createBooking = asyncHandler(async (req, res) => {
   const mongoBooking = async (data) => {
     return new Booking({
@@ -67,4 +92,4 @@ const createBooking = asyncHandler(async (req, res) => {
   }
 });
 
-export { createBooking, getBookings };
+export { createBooking, getBookings, getBookingById };
