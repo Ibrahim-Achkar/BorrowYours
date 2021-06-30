@@ -21,6 +21,12 @@ const BookingScreen = ({ match }) => {
 
   useEffect(() => {
     dispatch(listBookingDetails(match.params.id));
+
+    return () => {
+      // componentwillunmount in functional component.
+      // Anything in here is fired on component unmount.
+      dispatch(removeBooking());
+    };
   }, [match, dispatch]);
 
   const bookings = useSelector(getAllBookings);
@@ -34,11 +40,9 @@ const BookingScreen = ({ match }) => {
     item,
     owner,
     reserver,
-    _id: bookingId,
   } = booking;
 
-  const bookingRemoveHandler = () => {
-    dispatch(removeBooking());
+  const goBackHandler = () => {
     history.goBack();
   };
 
@@ -60,7 +64,7 @@ const BookingScreen = ({ match }) => {
                 <Button
                   className='btn- btn-primary my-4 p-2'
                   onClick={() => {
-                    bookingRemoveHandler();
+                    goBackHandler();
                   }}>
                   Go Back
                 </Button>

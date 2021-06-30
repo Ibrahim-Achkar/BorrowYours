@@ -86,7 +86,7 @@ const ItemTable = ({ history, match, name }) => {
               {reactList.map((booking) => (
                 <LinkContainer
                   key={('link to', booking._id)}
-                  to={`/items/${booking._id}`}>
+                  to={`/bookings/${booking._id}`}>
                   <tr key={booking._id}>
                     <td>{booking.item.name}</td>
                     <td>{booking.owner.name}</td>

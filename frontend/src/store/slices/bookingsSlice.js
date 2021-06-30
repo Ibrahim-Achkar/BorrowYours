@@ -18,7 +18,7 @@ const slice = createSlice({
     //requesting list of bookings
     bookingsRequested: (bookings, action) => {
       bookings.loading = true;
-      bookings.item = {};
+      bookings.booking = {};
       bookings.error = null;
       bookings.success = null;
     },

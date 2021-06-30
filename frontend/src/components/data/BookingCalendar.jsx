@@ -1,5 +1,5 @@
 //package imports
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Calendar from 'react-calendar';
 import {
@@ -20,10 +20,19 @@ const BookingCalendar = ({
   reserverUserId,
   reserveUserToken,
   bookedDates,
+  history,
+  booking,
 }) => {
   const dispatch = useDispatch();
   const [calValue, changeCalValue] = useState(new Date());
   const reservedDates = []; //this value will be filled with whatever date period the user selects
+
+  //redirecting to a booking once booking is created (booking in state will be empty before booking creation)
+  useEffect(() => {
+    if (booking._id) {
+      history.push(`/bookings/${booking._id}`);
+    }
+  });
 
   //putting the booked out dates back into object format so that the calendar can read them
   const bookedDatesToISO = [];

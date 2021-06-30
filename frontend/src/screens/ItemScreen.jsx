@@ -15,6 +15,7 @@ import {
   removeItem,
 } from '../store/slices/itemsSlice';
 import '../styles/ItemScreen.css';
+import { getAllBookings } from '../store/slices/bookingsSlice';
 
 const ItemScreen = ({ match }) => {
   const dispatch = useDispatch();
@@ -22,8 +23,15 @@ const ItemScreen = ({ match }) => {
 
   useEffect(() => {
     dispatch(listItemDetails(match.params.id));
+
+    return () => {
+      // componentwillunmount in functional component.
+      // Anything in here is fired on component unmount.
+      dispatch(removeItem());
+    };
   }, [match, dispatch]);
 
+  //getting the current item
   const items = useSelector(getAllItems);
   const { loading: itemLoading, error: itemError, item } = items;
   const {
@@ -39,12 +47,15 @@ const ItemScreen = ({ match }) => {
     bookedDates,
   } = item;
 
+  //getting the current booking, if any
+  const bookings = useSelector(getAllBookings);
+  const { booking } = bookings;
+
   const userAuth = useSelector((state) => state.features.userAuth);
   const { userLogin } = userAuth;
   const { _id: reserverUserId, token: reserveUserToken } = userLogin;
 
-  const itemRemoveHandler = () => {
-    dispatch(removeItem());
+  const goBackHandler = () => {
     history.goBack();
   };
 
@@ -69,7 +80,7 @@ const ItemScreen = ({ match }) => {
                 <Button
                   className='btn- btn-primary my-4 p-2'
                   onClick={() => {
-                    itemRemoveHandler();
+                    goBackHandler();
                   }}>
                   Go Back
                 </Button>
@@ -122,6 +133,8 @@ const ItemScreen = ({ match }) => {
                     reserverUserId={reserverUserId}
                     reserveUserToken={reserveUserToken}
                     bookedDates={bookedDates}
+                    history={history}
+                    booking={booking}
                   />
                 </ListGroup.Item>
               </ListGroup>
