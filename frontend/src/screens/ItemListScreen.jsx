@@ -11,7 +11,7 @@ const ItemListScreen = ({ history, match }) => {
     <>
       <Container>
         <Row className='mt-4 mb-4 ml-0 mr-0'>
-          <SearchBox history={history} />
+          <SearchBox history={history} list={'items'} />
         </Row>
         <ItemTable history={history} match={match} />
       </Container>

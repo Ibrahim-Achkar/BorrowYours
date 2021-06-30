@@ -2,39 +2,61 @@ import mongoose from 'mongoose';
 
 const bookingSchema = mongoose.Schema(
   {
-    user: {
+    item: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Item',
+    },
+
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      requried: true,
+      ref: 'User',
+    },
+
+    reserver: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'User',
     },
-    orderItems: [
-      {
-        name: { type: String, required: true },
-        qty: { type: Number, required: true },
-        image: { type: String, required: true },
-        price: { type: Number, required: true },
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: 'Product',
-        },
-      },
-    ],
+
+    reservedDates: {
+      type: Array,
+      required: true,
+    },
+
     isDelivered: {
       type: Boolean,
       required: true,
       default: false,
     },
+
     deliveredAt: {
       type: Date,
+      required: false,
     },
+
     isReturned: {
       type: Boolean,
       required: true,
       default: false,
     },
+
     returnedAt: {
       type: Date,
+      required: false,
+    },
+
+    isCancelled: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+
+    isComplete: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {

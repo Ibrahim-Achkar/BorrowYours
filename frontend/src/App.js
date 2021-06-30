@@ -14,6 +14,8 @@ import ItemListScreen from './screens/ItemListScreen';
 import UsersScreen from './screens/UsersScreen';
 import ItemScreen from './screens/ItemScreen';
 import CreateItemScreen from './screens/CreateItemScreen';
+import BookingListScreen from './screens/BookingListScreen';
+import BookingScreen from './screens/BookingScreen';
 
 const App = () => {
   return (
@@ -38,6 +40,18 @@ const App = () => {
             exact
           />
           <Route path='/create_item' component={CreateItemScreen} />
+          <Route path='/bookings/:id' component={BookingScreen} exact />
+          <Route path='/bookings' component={BookingListScreen} exact />
+          <Route
+            path='/bookings/page/:pageNumber'
+            render={BookingListScreen}
+            exact
+          />
+          <Route
+            path='/bookings/:keyword/page/:pageNumber'
+            render={BookingListScreen}
+            exact
+          />
           <Route path='/users' render={UsersScreen} />
           <Route path='/' render={HomeScreen} exact />
         </Container>

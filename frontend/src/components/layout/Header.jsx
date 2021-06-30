@@ -33,6 +33,11 @@ const Header = ({ history }) => {
                   <i className='fa fa-bath'></i> Items
                 </Nav.Link>
               </LinkContainer>
+              <LinkContainer to='/bookings'>
+                <Nav.Link>
+                  <i className='fa fa-bath'></i> Bookings
+                </Nav.Link>
+              </LinkContainer>
               <LinkContainer to='/users'>
                 <Nav.Link>
                   <i className='fa fa-bath'></i> Users

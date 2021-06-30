@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 //app imports
 import Item from '../models/itemModel.js';
 import Category from '../models/itemCategoryModel.js';
+import Bookings from '../models/bookingModel.js';
 
 /*Routes:
  * GET    /api/v1/items              Get all items from database        Public
@@ -60,11 +61,38 @@ const getItemById = asyncHandler(async (req, res) => {
     .populate('user', 'name')
     .populate('category', 'name', Category);
 
+  /*TODO this is an expensive way of finding the bookings for the item and 
+  then only returning those bookings for the item because: 
+  * the populate is still returning all the bookings - except those 
+  * the filter then has to filter all the bookings that don't have an item of null
+  * THIS WILL NOT SCALE LOL 😛
+  */
+  const bookings = await Bookings.find({}).populate({
+    path: 'item',
+    match: { _id: { $eq: req.params.id } },
+  });
+
+  const filtered = bookings.filter((booking) => {
+    if (
+      booking.item &&
+      booking.isCancelled === false && //if booking is not cancelled we want to gray out that date in the calendar
+      booking.isComplete === false //if booking is not complete we want to gray out that date in the calendar
+    ) {
+      return booking;
+    }
+  });
+
+  const bookedDates = [];
+
+  filtered.forEach((booking) => bookedDates.push(...booking.reservedDates));
+
   if (item) {
     res.json({
       ...item._doc, //spread the first level of item values into an empty object (ie name, isAvailable, etc)
       category: item.category.name, //replace the category object with just the category name
       user: item.user.name, //replace the user object with just the user name
+      userId: item.user._id, //insert the user Id
+      bookedDates,
     }); //after all of this have a flat object which won't trigger any React Children as Object errors
   } else {
     res.status(404);

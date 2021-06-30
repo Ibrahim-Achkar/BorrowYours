@@ -14,7 +14,7 @@ import categories from './categories.js';
 import User from '../models/userModel.js';
 import Item from '../models/itemModel.js';
 import Category from '../models/itemCategoryModel.js';
-// import Booking from '../models/bookingModel.js';
+import Booking from '../models/bookingModel.js';
 import connectDB from '../config/db.js';
 
 dotenv.config();
@@ -27,7 +27,9 @@ const importData = async () => {
     await Item.deleteMany();
     await Category.deleteMany();
     await User.deleteMany();
+    await Booking.deleteMany();
 
+    await Booking.createCollection();
     const createdCategories = await Category.insertMany(categories);
     const createdUsers = await User.insertMany(users);
     const adminUser = createdUsers[0]._id;
