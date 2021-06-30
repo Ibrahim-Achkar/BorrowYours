@@ -4,6 +4,8 @@ import connectDB from './config/db.js';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import path from 'path';
+import helmet from 'helmet';
+import cors from 'cors';
 import colors from 'colors';
 //app imports
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -28,8 +30,10 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('short'));
 }
 
-//Middleware
+//Mount middleware packages
 app.use(express.json());
+app.use(helmet());
+app.use(cors());
 
 //Connect to PORT set in global environment, or else 5000
 const PORT = process.env.PORT || 5000;
