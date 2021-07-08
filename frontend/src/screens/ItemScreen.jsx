@@ -77,13 +77,26 @@ const ItemScreen = ({ match }) => {
                 <Image src={imageURL} alt={name} fluid />
               </Row>
               <Row className='go-back'>
-                <Button
-                  className='btn- btn-primary my-4 p-2'
-                  onClick={() => {
-                    goBackHandler();
-                  }}>
-                  Go Back
-                </Button>
+                <Col className='mr-0 ml-0 pl-0'>
+                  <Button
+                    className='btn- btn-primary my-4'
+                    onClick={() => {
+                      goBackHandler();
+                    }}>
+                    Go Back
+                  </Button>
+                </Col>
+                {reserverUserId !== ownerUserId ? null : (
+                  <Col className='mr-0 ml-0 pl-0'>
+                    <Button
+                      className='btn- btn-primary my-4'
+                      onClick={() => {
+                        history.push(`/items/${item._id}/edit`);
+                      }}>
+                      Edit
+                    </Button>
+                  </Col>
+                )}
               </Row>
             </Col>
             <Col className='mt-5' md={4}>
@@ -91,7 +104,11 @@ const ItemScreen = ({ match }) => {
                 <ListGroup.Item className='item-details'>
                   <Row>
                     <Col>Owned by: </Col>
-                    <Col>{user}</Col>
+                    {reserverUserId === ownerUserId ? (
+                      <Col>You!</Col>
+                    ) : (
+                      <Col>{user}</Col>
+                    )}
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item className='item-details'>
@@ -126,17 +143,19 @@ const ItemScreen = ({ match }) => {
                     </Col>
                   </Row>
                 </ListGroup.Item>
-                <ListGroup.Item>
-                  <BookingCalendar
-                    ownerUserId={ownerUserId}
-                    itemId={itemId}
-                    reserverUserId={reserverUserId}
-                    reserveUserToken={reserveUserToken}
-                    bookedDates={bookedDates}
-                    history={history}
-                    booking={booking}
-                  />
-                </ListGroup.Item>
+                {reserverUserId === ownerUserId ? null : (
+                  <ListGroup.Item>
+                    <BookingCalendar
+                      ownerUserId={ownerUserId}
+                      itemId={itemId}
+                      reserverUserId={reserverUserId}
+                      reserveUserToken={reserveUserToken}
+                      bookedDates={bookedDates}
+                      history={history}
+                      booking={booking}
+                    />
+                  </ListGroup.Item>
+                )}{' '}
               </ListGroup>
             </Col>
           </Row>

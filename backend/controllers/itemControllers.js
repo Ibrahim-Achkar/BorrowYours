@@ -10,6 +10,7 @@ import Bookings from '../models/bookingModel.js';
  * GET    /api/v1/items/categories   Get all categories from database   Public
  * GET    /api/v1/items/:id          Get item by id from database       Public
  * POST   /api/v1/items/create_item  Create an item                     Public (for now)
+ * PUT    /api/v1/items/:id          Update an item                     Public (for now)
  */
 
 //@desc     Get all items from database
@@ -131,4 +132,45 @@ const createItem = asyncHandler(async (req, res) => {
   }
 });
 
-export { getItems, getCategories, getItemById, createItem };
+//@desc     update an item
+//@route    PUT/api/v1/items/:id
+//@access   Public (for now)
+const updateItem = asyncHandler(async (req, res) => {
+  const {
+    name,
+    user,
+    imageURL,
+    brand,
+    category,
+    description,
+    barcode,
+    countInStock,
+    isAvailable,
+    isDelete,
+  } = req.body;
+
+  const item = await Item.findById(req.params.id);
+
+  if (item) {
+    item.name = name;
+    // item.user = user;
+    if (imageURL) {
+      item.imageURL = imageURL;
+    }
+    item.brand = brand;
+    item.category = category;
+    item.description = description;
+    item.barcode = barcode;
+    item.countInStock = countInStock;
+    // item.isAvailable = isAvailable;
+    // item.isDelete = isDelete;
+
+    const updatedItem = await item.save();
+    res.status(201).json(updatedItem);
+  } else {
+    res.status(404);
+    throw new Error('Item not found');
+  }
+});
+
+export { getItems, getCategories, getItemById, createItem, updateItem };

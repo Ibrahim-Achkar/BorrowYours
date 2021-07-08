@@ -10,7 +10,7 @@ const slice = createSlice({
   initialState: {
     list: [],
     loading: false,
-    success: null,
+    success: false,
     lastFetch: null,
     error: null,
   },
@@ -19,7 +19,7 @@ const slice = createSlice({
     usersRequested: (users, action) => {
       users.loading = true;
       users.error = null;
-      users.success = null;
+      users.success = false;
     },
     usersReceived: (users, action) => {
       users.list = action.payload;
@@ -29,6 +29,7 @@ const slice = createSlice({
     },
     usersRequestFailed: (users, action) => {
       users.loading = false;
+      users.success = false;
       users.error = action.payload;
     },
   },

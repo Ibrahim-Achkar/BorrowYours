@@ -13,6 +13,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import ItemListScreen from './screens/ItemListScreen';
 import UsersScreen from './screens/UsersScreen';
 import ItemScreen from './screens/ItemScreen';
+import ItemEditScreen from './screens/ItemEditScreen';
 import CreateItemScreen from './screens/CreateItemScreen';
 import BookingListScreen from './screens/BookingListScreen';
 import BookingScreen from './screens/BookingScreen';
@@ -23,15 +24,19 @@ const App = () => {
       <Route render={({ history }) => <Header history={history} />} />
       <main className='py-3'>
         <Container>
-          <Route path='/profile' render={ProfileScreen} exact />
+          <Route path='/profile' component={ProfileScreen} exact />
           <Route
             path='/profile/page/:pageNumber'
-            render={ProfileScreen}
+            component={ProfileScreen}
             exact
           />
           <Route path='/login' component={LoginScreen} />
           <Route path='/register' render={RegisterScreen} />
           <Route path='/items/:id' component={ItemScreen} exact />
+          {/* <ProtectedRoute path='/items/:id/edit'>
+            <ItemEditScreen />
+          </ProtectedRoute> */}
+          <Route path='/items/:id/edit' component={ItemEditScreen} exact />
           <Route path='/items' component={ItemListScreen} exact />
           <Route path='/items/page/:pageNumber' render={ItemListScreen} exact />
           <Route

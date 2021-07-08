@@ -22,7 +22,7 @@ const slice = createSlice({
     //requesting list of items
     itemsRequested: (items, action) => {
       items.loading = true;
-      items.item = {}; //TODO check if this is a good thing to do here
+      // items.item = {}; <-- not needed since componentWillUnMount implemented
       items.error = null;
       items.success = null;
     },
@@ -92,6 +92,23 @@ const slice = createSlice({
       items.loading = false;
       items.error = action.payload;
     },
+
+    //creating an item
+    itemUpdateRequested: (items, action) => {
+      items.loading = true;
+      items.error = null;
+      items.success = null;
+    },
+    itemUpdateReceived: (items, action) => {
+      items.item = action.payload;
+      items.loading = false;
+      items.success = true;
+      items.error = null;
+    },
+    itemUpdateRequestFailed: (items, action) => {
+      items.loading = false;
+      items.error = action.payload;
+    },
   },
 });
 
@@ -110,6 +127,9 @@ export const {
   itemCreateRequested,
   itemCreateReceived,
   itemCreateRequestFailed,
+  itemUpdateRequested,
+  itemUpdateReceived,
+  itemUpdateRequestFailed,
 } = slice.actions;
 export default slice.reducer;
 
@@ -225,3 +245,22 @@ export const createItem =
       return error;
     }
   };
+
+//update an item
+export const updateItem = (item, headers) => (dispatch) => {
+  try {
+    dispatch(
+      apiCallBegan({
+        url: `/api/v1/items/${item.itemId}`,
+        data: item,
+        headers,
+        method: 'put',
+        onStart: itemUpdateRequested.type,
+        onSuccess: itemUpdateReceived.type,
+        onError: itemUpdateRequestFailed.type,
+      })
+    );
+  } catch (error) {
+    return error;
+  }
+};

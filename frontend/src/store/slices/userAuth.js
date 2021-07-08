@@ -6,16 +6,23 @@ const slice = createSlice({
   name: 'userAuth',
   initialState: {
     loading: false,
-    error: null,
-    success: null,
+    error: false,
+    success: false,
     userLogin: {},
   },
   reducers: {
+    //fetch flags reset
+    userFetchFlagsReset: (userAuth, action) => {
+      userAuth.loading = false;
+      userAuth.error = false;
+      userAuth.success = false;
+    },
+
     //logging in and out
     userLoginRequested: (userAuth, action) => {
       userAuth.loading = true;
-      userAuth.error = null;
-      userAuth.success = null;
+      userAuth.error = false;
+      userAuth.success = false;
     },
     userLoginReceived: (userAuth, action) => {
       userAuth.loading = false;
@@ -34,7 +41,7 @@ const slice = createSlice({
     userRegRequested: (userAuth, action) => {
       userAuth.loading = true;
       userAuth.error = null;
-      userAuth.success = null;
+      userAuth.success = false;
     },
     userRegReceived: (userAuth, action) => {
       userAuth.loading = false;
@@ -42,6 +49,7 @@ const slice = createSlice({
       userAuth.success = true;
     },
     userRegFailed: (userAuth, action) => {
+      userAuth.success = false;
       userAuth.loading = false;
       userAuth.error = action.payload;
     },
@@ -50,7 +58,7 @@ const slice = createSlice({
     userUpdateRequested: (userAuth, action) => {
       userAuth.loading = true;
       userAuth.error = null;
-      userAuth.success = null;
+      userAuth.success = false;
     },
     userUpdateReceived: (userAuth, action) => {
       userAuth.loading = false;
@@ -59,6 +67,7 @@ const slice = createSlice({
     },
     userUpdateFailed: (userAuth, action) => {
       userAuth.loading = false;
+      userAuth.success = false;
       userAuth.error = action.payload;
     },
   },
@@ -66,6 +75,7 @@ const slice = createSlice({
 
 //Exports
 export const {
+  userFetchFlagsReset,
   userLoginRequested,
   userLoginReceived,
   userLoginFailed,
@@ -80,6 +90,10 @@ export const {
 export default slice.reducer;
 
 //Action creators
+//Resetting fetch flags
+export const resetUserAuthFlags = () => (dispatch) => {
+  return dispatch(userFetchFlagsReset());
+};
 
 //Logging in
 export const login = (email, password) => (dispatch) => {

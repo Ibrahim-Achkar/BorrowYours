@@ -3,59 +3,107 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+
 //app imports
 import Message from '../components/utility/Message';
 import Loader from '../components/utility/Loader';
 import FormContainer from '../components/utility/FormContainer';
 import {
-  loadCategories,
-  getAllCategories,
+  listItemDetails,
   getAllItems,
-  createItem,
+  removeItem,
+  updateItem,
+  getAllCategories,
+  loadCategories,
 } from '../store/slices/itemsSlice';
 
-const CreateItemScreen = ({ history }) => {
+const ItemEditScreen = ({ match, history }) => {
   const dispatch = useDispatch();
 
-  const userAuth = useSelector((state) => state.features.userAuth);
-  const { userLogin } = userAuth;
-  const item = useSelector((state) => state.entities.items.item);
-
-  useEffect(() => {
-    if (!userLogin.name) {
-      history.push('/login');
-    }
-    dispatch(loadCategories());
-  }, [dispatch, history, userLogin]);
-
-  useEffect(() => {
-    if (item._id) {
-      history.push(`/items/${item._id}`);
-    }
-  });
-
-  //getting all the categories so we can map them & add the first cat to the category state
-  const categories = useSelector(getAllCategories);
-  useEffect(() => {
-    if (categories.length > 0) {
-      setFormCategory(categories[0].name);
-    }
-  }, [categories]);
-
+  //setting up form state
   const [formName, setFormName] = useState('');
   const [formImageURL, setFormImageURL] = useState('');
   const [formBrand, setFormBrand] = useState('');
   const [formCategory, setFormCategory] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formBarcode, setFormBarcode] = useState('');
-  const [formCountInStock, setFormCountInStock] = useState('');
-  const [formMessage, setFormMessage] = useState(null);
+  const [formCountInStock, setFormCountInStock] = useState(0);
+  const [formMessage, setFormMessage] = useState('');
   const [formUploading, setFormUploading] = useState(false);
-  const [formUploadFile, setFormUploadFile] = useState('');
+  const [formUploadFile, setFormUploadFile] = useState(false);
   const [formValidated, setFormValidated] = useState(false);
 
+  //getting current user
+  const userAuth = useSelector((state) => state.features.userAuth);
+  const { userLogin } = userAuth;
+
+  //getting the current item
   const items = useSelector(getAllItems);
-  const { loading: itemLoading, error: itemError } = items;
+  const { loading: itemLoading, error: itemError, item } = items;
+  const {
+    countInStock,
+    name,
+    // imageURL,
+    description,
+    brand,
+    category,
+    barcode,
+    // user,
+    userId: ownerUserId,
+    _id: itemId,
+    // bookedDates,
+  } = item;
+
+  //getting all the categories
+  const categories = useSelector(getAllCategories);
+
+  //loading items and categories into state
+  useEffect(() => {
+    if (!userLogin.name) {
+      history.push('/login');
+    }
+
+    dispatch(listItemDetails(match.params.id));
+    dispatch(loadCategories());
+
+    return () => {
+      // componentwillunmount in functional component.
+      // Anything in here is fired on component unmount.
+      dispatch(removeItem());
+    };
+  }, [match, dispatch, userLogin.name, history]);
+
+  //setting the form on load to the current values
+  useEffect(() => {
+    if (categories.length > 0) {
+      setFormName(name);
+      setFormBrand(brand);
+      setFormCategory(category);
+      setFormDescription(description);
+      setFormBarcode(barcode);
+      setFormCountInStock(countInStock);
+    }
+  }, [
+    barcode,
+    brand,
+    categories.length,
+    category,
+    countInStock,
+    description,
+    name,
+    dispatch,
+  ]);
+
+  //protecting the route
+  useEffect(() => {
+    if (userLogin._id && item.userId) {
+      //waiting until both exist, otherwise redirect will fire too soon
+      if (userLogin._id !== item.userId) {
+        history.push('/');
+        //if user does not own item, redirect to homepage
+      }
+    }
+  }, [dispatch, history, item.userId, userLogin._id]);
 
   //Submission of headers and data through updateUserProfile
   const headers = {
@@ -72,12 +120,13 @@ const CreateItemScreen = ({ history }) => {
     }
   }
 
+  //the data will contain the current form state
   const data = {
-    //does not contain imageURL because that's inserted below
-    user: userLogin._id,
+    itemId,
+    ownerUserId,
     name: formName,
     brand: formBrand,
-    category: getMatchedKeyValueId(categories, 'name', formCategory),
+    category: getMatchedKeyValueId(categories, 'name', category),
     description: formDescription,
     barcode: formBarcode,
     countInStock: formCountInStock,
@@ -103,7 +152,7 @@ const CreateItemScreen = ({ history }) => {
     }
   };
 
-  //TODO Delete image if database entry creation fails
+  //TODO Delete old image if new image uploaded
   const submitHandler = async (e) => {
     const form = e.currentTarget;
 
@@ -116,24 +165,39 @@ const CreateItemScreen = ({ history }) => {
 
     if (form.checkValidity() === true) {
       e.preventDefault();
-      let path = await uploadFileHandler(formUploadFile);
+      let path;
+
+      if (formImageURL) {
+        path = await uploadFileHandler(formUploadFile);
+      }
       if (path) {
         try {
           setFormMessage('');
-          dispatch(createItem({ ...data, imageURL: path }, headers));
+          dispatch(updateItem({ ...data, imageURL: path }, headers));
+          history.push(`/items/${itemId}`); //TODO getting around categories breaking on update if not pushed somewhere else
         } catch (error) {
           setFormMessage(error);
         }
       } else {
-        setFormMessage(`File upload error`);
+        try {
+          setFormMessage('');
+          dispatch(updateItem(data, headers));
+          history.push(`/items/${itemId}`); //as above
+        } catch (error) {
+          setFormMessage(error);
+        }
       }
     }
+  };
+
+  const goBackHandler = () => {
+    history.goBack();
   };
 
   return (
     <Row>
       <Col>
-        <h1>Create Item 🎁</h1>
+        <h1>Edit Item 🎁</h1>
         {formMessage && <Message variant='danger'>{formMessage}</Message>}
         {itemError && <Message variant='danger'>{itemError}</Message>}
         {itemLoading && <Loader />}
@@ -158,15 +222,11 @@ const CreateItemScreen = ({ history }) => {
             <Form.Group controlId='image'>
               <Form.Label>Image</Form.Label>
               <Form.Control
-                required
                 type='text'
                 placeholder='image path'
                 value={formImageURL}
                 onChange={(e) => setFormImageURL(e.target.value)}
               />
-              <Form.Control.Feedback type='valid'>
-                You got it 🤩
-              </Form.Control.Feedback>
               <Form.Control.Feedback type='invalid'>
                 please add an image!
               </Form.Control.Feedback>
@@ -250,9 +310,25 @@ const CreateItemScreen = ({ history }) => {
                 please add an amount!
               </Form.Control.Feedback>
             </Form.Group>
-            <Button type='submit' variant='primary'>
-              Create Item
-            </Button>
+            <Row>
+              <Col>
+                <Button
+                  className='btn- btn-primary my-4 p-2'
+                  type='submit'
+                  variant='primary'>
+                  Update
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  className='btn- btn-primary my-4 p-2'
+                  onClick={() => {
+                    goBackHandler();
+                  }}>
+                  Go Back
+                </Button>
+              </Col>
+            </Row>
           </Form>
         </FormContainer>
       </Col>
@@ -260,4 +336,4 @@ const CreateItemScreen = ({ history }) => {
   );
 };
 
-export default CreateItemScreen;
+export default ItemEditScreen;

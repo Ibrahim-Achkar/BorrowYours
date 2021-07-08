@@ -9,15 +9,15 @@ import {
   getUsers,
   getUserById,
 } from '../controllers/userControllers.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { userAuth } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 router.route('/').post(registerUser).get(getUsers);
 router
   .route('/profile')
-  .get(protect, getUserLoginDetails)
-  .put(protect, updateUserProfile);
+  .get(userAuth, getUserLoginDetails)
+  .put(userAuth, updateUserProfile);
 router.route('/:id').get(getUserById);
 router.post('/login', authUser);
 

@@ -1,12 +1,24 @@
 //package imports
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
 
 //app imports
 import ProfileInfoBox from '../components/data/ProfileInfoBox';
 import ItemTable from '../components/data/ItemTable';
+import { resetUserAuthFlags } from '../store/slices/userAuth';
 
-const ProfileScreen = ({ location, history, match }) => {
+const ProfileScreen = ({ history, match }) => {
+  //TODO pull up bits of state that are being called by both profile info box and item table
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetUserAuthFlags());
+    };
+  }, [dispatch, history]);
+
   return (
     <Container fluid>
       <Row>

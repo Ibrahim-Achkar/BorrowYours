@@ -10,7 +10,11 @@ import Message from '../utility/Message';
 import Loader from '../utility/Loader';
 import Paginate from '../utility/Paginate';
 import Meta from '../utility/Meta';
-import { loadItems, getAllItems } from '../../store/slices/itemsSlice';
+import {
+  loadItems,
+  getAllItems,
+  removeItem,
+} from '../../store/slices/itemsSlice';
 import '../../styles/ItemListScreen.css';
 
 const ItemTable = ({ history, match, name }) => {
@@ -48,7 +52,13 @@ const ItemTable = ({ history, match, name }) => {
 
   //dispatching loaditems with the keyword and correct page number
   useEffect(() => {
+    dispatch(removeItem());
+    //TODO try to improve this:
+    //removeItem() is only here to clear the state of the item so that
+    //when you click on the edit button it checks that the user owns the item against the correct
+    //item (otherwise it will check against any previous item that happens to be in state)
     dispatch(loadItems(keyword, pageNumber));
+    return () => {};
   }, [dispatch, keyword, pageNumber, userName]);
 
   return (
@@ -79,8 +89,8 @@ const ItemTable = ({ history, match, name }) => {
                 <th>DESCRIPTION</th>
                 <th>CATEGORY</th>
                 <th>BRAND</th>
-                <th>USER</th>
-                <th></th>
+                {tableName === 'Your Items' ? null : <th>USER</th>}
+                {tableName === 'Your Items' ? <th>EDIT</th> : null}
               </tr>
             </thead>
             <tbody>
@@ -93,14 +103,18 @@ const ItemTable = ({ history, match, name }) => {
                     <td>{item.description}</td>
                     <td>{item.category.name}</td>
                     <td>{item.brand}</td>
-                    <td>{item.user.name}</td>
-                    <td>
-                      <LinkContainer to={`/items/${item._id}`}>
-                        <Button variant='light' className='btn-sm'>
-                          <p>View Item</p>
-                        </Button>
-                      </LinkContainer>
-                    </td>
+                    {tableName === 'Your Items' ? null : (
+                      <td>{item.user.name}</td>
+                    )}
+                    {tableName === 'Your Items' ? (
+                      <td>
+                        <LinkContainer to={`/items/${item._id}/edit`}>
+                          <Button variant='light' className='btn-sm'>
+                            <p>Edit Item</p>
+                          </Button>
+                        </LinkContainer>
+                      </td>
+                    ) : null}
                   </tr>
                 </LinkContainer>
               ))}

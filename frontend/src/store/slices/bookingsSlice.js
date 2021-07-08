@@ -18,7 +18,7 @@ const slice = createSlice({
     //requesting list of bookings
     bookingsRequested: (bookings, action) => {
       bookings.loading = true;
-      bookings.booking = {};
+      // bookings.booking = {}; <-- not needed since componentWillUnMount implemented
       bookings.error = null;
       bookings.success = null;
     },
