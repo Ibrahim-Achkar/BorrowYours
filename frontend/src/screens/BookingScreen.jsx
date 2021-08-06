@@ -43,7 +43,13 @@ const BookingScreen = ({ match }) => {
   } = booking;
 
   const goBackHandler = () => {
-    history.goBack();
+    if (history.location.pathname === '/bookings') {
+      //this is if you have come from the bookings page
+      history.goBack();
+    } else {
+      //this is when you have made a booking and get sent to booking page (history in this case is the item)
+      history.push(`/items`);
+    }
   };
 
   return (

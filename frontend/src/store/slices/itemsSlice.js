@@ -11,10 +11,10 @@ const slice = createSlice({
     list: [],
     item: {},
     categories: [],
-    loading: false,
     lastFetch: null,
-    error: null,
-    success: null,
+    loading: false,
+    success: false,
+    error: false,
     page: '',
     pages: '',
   },
@@ -22,9 +22,8 @@ const slice = createSlice({
     //requesting list of items
     itemsRequested: (items, action) => {
       items.loading = true;
-      // items.item = {}; <-- not needed since componentWillUnMount implemented
-      items.error = null;
-      items.success = null;
+      items.error = false;
+      items.success = false;
     },
     itemsReceived: (items, action) => {
       items.list = action.payload.items;
@@ -33,7 +32,6 @@ const slice = createSlice({
       items.lastFetch = new Date().toString();
       items.loading = false;
       items.success = true;
-      items.error = null;
     },
     itemsRequestFailed: (items, action) => {
       items.loading = false;
@@ -43,14 +41,13 @@ const slice = createSlice({
     //requesting item categories
     categoriesRequested: (items, action) => {
       items.loading = true;
-      items.error = null;
-      items.success = null;
+      items.error = false;
+      items.success = false;
     },
     categoriesReceived: (items, action) => {
       items.categories = action.payload;
       items.loading = false;
       items.success = true;
-      items.error = null;
     },
     categoriesRequestFailed: (items, action) => {
       items.loading = false;
@@ -60,13 +57,12 @@ const slice = createSlice({
     //requesting an item
     itemRequested: (items, action) => {
       items.loading = true;
-      items.error = null;
-      items.success = null;
+      items.error = false;
+      items.success = false;
     },
     itemReceived: (items, action) => {
       items.item = action.payload;
       items.loading = false;
-      items.error = null;
     },
     itemRequestFailed: (items, action) => {
       items.loading = false;
@@ -79,14 +75,13 @@ const slice = createSlice({
     //creating an item
     itemCreateRequested: (items, action) => {
       items.loading = true;
-      items.error = null;
-      items.success = null;
+      items.error = false;
+      items.success = false;
     },
     itemCreateReceived: (items, action) => {
       items.item = action.payload;
       items.loading = false;
       items.success = true;
-      items.error = null;
     },
     itemCreateRequestFailed: (items, action) => {
       items.loading = false;
@@ -96,16 +91,47 @@ const slice = createSlice({
     //creating an item
     itemUpdateRequested: (items, action) => {
       items.loading = true;
-      items.error = null;
-      items.success = null;
+      items.error = false;
+      items.success = false;
     },
     itemUpdateReceived: (items, action) => {
       items.item = action.payload;
       items.loading = false;
       items.success = true;
-      items.error = null;
     },
     itemUpdateRequestFailed: (items, action) => {
+      items.loading = false;
+      items.error = action.payload;
+    },
+
+    //deleting an item
+    itemDeleteRequested: (items, action) => {
+      items.loading = true;
+      items.error = false;
+      items.success = false;
+    },
+    itemDeleteReceived: (items, action) => {
+      items.item = action.payload;
+      items.loading = false;
+      items.success = true;
+    },
+    itemDeleteFailed: (items, action) => {
+      items.loading = false;
+      items.error = action.payload;
+    },
+
+    //setting item availability
+    itemAvailabilityRequested: (items, action) => {
+      items.loading = true;
+      items.error = false;
+      items.success = false;
+    },
+    itemAvailabilityReceived: (items, action) => {
+      items.item = action.payload;
+      items.loading = false;
+      items.success = true;
+    },
+    itemAvailabilityFailed: (items, action) => {
       items.loading = false;
       items.error = action.payload;
     },
@@ -130,19 +156,26 @@ export const {
   itemUpdateRequested,
   itemUpdateReceived,
   itemUpdateRequestFailed,
+  itemDeleteRequested,
+  itemDeleteReceived,
+  itemDeleteFailed,
+  itemAvailabilityRequested,
+  itemAvailabilityReceived,
+  itemAvailabilityFailed,
 } = slice.actions;
 export default slice.reducer;
 
 //Action creators
 //load items into state
-export const loadItems =
-  (keyword = '', pageNumber = '') =>
+export const getItemsFromDB =
+  (keyword = '', pageNumber = '', flags) =>
   (dispatch, getState) => {
     try {
       return dispatch(
         apiCallBegan({
           url: `/api/v1/items?keyword=${keyword}&pageNumber=${pageNumber}`,
           method: 'get',
+          headers: { ...flags },
           onStart: itemsRequested.type,
           onSuccess: itemsReceived.type,
           onError: itemsRequestFailed.type,
@@ -153,8 +186,31 @@ export const loadItems =
     }
   };
 
-//Items Memoisation function
-export const getAllItems = createSelector(
+//Items Memoisation functions
+//get all available items in an array
+export const getItemsFromState = createSelector(
+  (state) => state.entities.items.list,
+  (list) => list
+);
+
+//get user's items in an array
+export const getUsersItemsFromState = (userName) =>
+  createSelector(
+    (state) => state.entities.items.list,
+    (list) =>
+      list.filter((item) => {
+        return item.user.name === userName;
+      })
+  );
+
+//get all info in the item entity
+export const getItemEntityInfo = createSelector(
+  (state) => state.entities.items,
+  (items) => [items.error, items.loading, items.page, items.pages]
+);
+
+//get single item info
+export const getSingleItemInfo = createSelector(
   (state) => state.entities.items,
   (items) => items
 );
@@ -264,3 +320,52 @@ export const updateItem = (item, headers) => (dispatch) => {
     return error;
   }
 };
+
+//delete an item
+export const deleteItem = (item, headers) => (dispatch) => {
+  try {
+    dispatch(
+      apiCallBegan({
+        url: `/api/v1/items/${item.itemId}/delete`,
+        data: item,
+        headers,
+        method: 'put',
+        onStart: itemDeleteRequested.type,
+        onSuccess: itemDeleteReceived.type,
+        onError: itemDeleteFailed.type,
+      })
+    );
+  } catch (error) {
+    return error;
+  }
+};
+
+//update item availability
+export const updateItemAvailability =
+  (item, headers, keyword, pageNumber) => async (dispatch) => {
+    try {
+      await dispatch(
+        apiCallBegan({
+          url: `/api/v1/items/${item.itemId}/availability`,
+          data: item,
+          headers,
+          method: 'put',
+          onStart: itemAvailabilityRequested.type,
+          onSuccess: itemAvailabilityReceived.type,
+          onError: itemAvailabilityFailed.type,
+        })
+      );
+
+      dispatch(
+        apiCallBegan({
+          url: `/api/v1/items?keyword=${keyword}&pageNumber=${pageNumber}`,
+          method: 'get',
+          onStart: itemsRequested.type,
+          onSuccess: itemsReceived.type,
+          onError: itemsRequestFailed.type,
+        })
+      );
+    } catch (error) {
+      return error;
+    }
+  };

@@ -1,8 +1,8 @@
 //package imports
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Image, ListGroup, Button } from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Button, Modal } from 'react-bootstrap';
 
 //app imports
 import Message from '../components/utility/Message';
@@ -11,8 +11,9 @@ import Meta from '../components/utility/Meta';
 import BookingCalendar from '../components/data/BookingCalendar';
 import {
   listItemDetails,
-  getAllItems,
+  getSingleItemInfo,
   removeItem,
+  deleteItem,
 } from '../store/slices/itemsSlice';
 import '../styles/ItemScreen.css';
 import { getAllBookings } from '../store/slices/bookingsSlice';
@@ -32,7 +33,7 @@ const ItemScreen = ({ match }) => {
   }, [match, dispatch]);
 
   //getting the current item
-  const items = useSelector(getAllItems);
+  const items = useSelector(getSingleItemInfo);
   const { loading: itemLoading, error: itemError, item } = items;
   const {
     countInStock,
@@ -51,10 +52,33 @@ const ItemScreen = ({ match }) => {
   const bookings = useSelector(getAllBookings);
   const { booking } = bookings;
 
+  //getting current user
   const userAuth = useSelector((state) => state.features.userAuth);
   const { userLogin } = userAuth;
   const { _id: reserverUserId, token: reserveUserToken } = userLogin;
 
+  //implementing the bootstrap Modal
+  const [showModal, setShowModal] = useState(false);
+  const handleCloseModal = () => setShowModal(false);
+  const handleShowModal = () => setShowModal(true);
+
+  //delete handler
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${userLogin.token}`,
+  };
+
+  const data = {
+    ownerUserId,
+    itemId,
+  };
+
+  const deleteHandler = async () => {
+    await dispatch(deleteItem(data, headers));
+    history.push(`/profile`);
+  };
+
+  //go back handler
   const goBackHandler = () => {
     history.goBack();
   };
@@ -89,12 +113,37 @@ const ItemScreen = ({ match }) => {
                 {reserverUserId !== ownerUserId ? null : (
                   <Col className='mr-0 ml-0 pl-0'>
                     <Button
-                      className='btn- btn-primary my-4'
+                      className='btn- btn-primary my-4 mr-4'
                       onClick={() => {
                         history.push(`/items/${item._id}/edit`);
                       }}>
                       Edit
                     </Button>
+                    <Button
+                      className='btn- btn-primary my-4'
+                      onClick={handleShowModal}>
+                      Delete
+                    </Button>
+                    <Modal show={showModal} onHide={handleCloseModal}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Confirm Delete</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        Are you sure you want to delete this item?
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button variant='secondary' onClick={handleCloseModal}>
+                          No, take me back!
+                        </Button>
+                        <Button
+                          variant='primary'
+                          onClick={() => {
+                            deleteHandler();
+                          }}>
+                          Delete it!
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
                   </Col>
                 )}
               </Row>

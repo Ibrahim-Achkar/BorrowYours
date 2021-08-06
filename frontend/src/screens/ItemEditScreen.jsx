@@ -10,7 +10,7 @@ import Loader from '../components/utility/Loader';
 import FormContainer from '../components/utility/FormContainer';
 import {
   listItemDetails,
-  getAllItems,
+  getSingleItemInfo,
   removeItem,
   updateItem,
   getAllCategories,
@@ -38,7 +38,7 @@ const ItemEditScreen = ({ match, history }) => {
   const { userLogin } = userAuth;
 
   //getting the current item
-  const items = useSelector(getAllItems);
+  const items = useSelector(getSingleItemInfo);
   const { loading: itemLoading, error: itemError, item } = items;
   const {
     countInStock,
@@ -126,7 +126,7 @@ const ItemEditScreen = ({ match, history }) => {
     ownerUserId,
     name: formName,
     brand: formBrand,
-    category: getMatchedKeyValueId(categories, 'name', category),
+    category: getMatchedKeyValueId(categories, 'name', formCategory),
     description: formDescription,
     barcode: formBarcode,
     countInStock: formCountInStock,
@@ -181,6 +181,7 @@ const ItemEditScreen = ({ match, history }) => {
       } else {
         try {
           setFormMessage('');
+          console.log(data);
           dispatch(updateItem(data, headers));
           history.push(`/items/${itemId}`); //as above
         } catch (error) {

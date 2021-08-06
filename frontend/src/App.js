@@ -33,9 +33,6 @@ const App = () => {
           <Route path='/login' component={LoginScreen} />
           <Route path='/register' render={RegisterScreen} />
           <Route path='/items/:id' component={ItemScreen} exact />
-          {/* <ProtectedRoute path='/items/:id/edit'>
-            <ItemEditScreen />
-          </ProtectedRoute> */}
           <Route path='/items/:id/edit' component={ItemEditScreen} exact />
           <Route path='/items' component={ItemListScreen} exact />
           <Route path='/items/page/:pageNumber' render={ItemListScreen} exact />

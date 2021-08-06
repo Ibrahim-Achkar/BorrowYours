@@ -10,7 +10,7 @@ import FormContainer from '../components/utility/FormContainer';
 import {
   loadCategories,
   getAllCategories,
-  getAllItems,
+  getItemsFromState,
   createItem,
 } from '../store/slices/itemsSlice';
 
@@ -54,7 +54,7 @@ const CreateItemScreen = ({ history }) => {
   const [formUploadFile, setFormUploadFile] = useState('');
   const [formValidated, setFormValidated] = useState(false);
 
-  const items = useSelector(getAllItems);
+  const items = useSelector(getItemsFromState);
   const { loading: itemLoading, error: itemError } = items;
 
   //Submission of headers and data through updateUserProfile

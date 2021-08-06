@@ -6,11 +6,14 @@ import Category from '../models/itemCategoryModel.js';
 import Bookings from '../models/bookingModel.js';
 
 /*Routes:
- * GET    /api/v1/items              Get all items from database        Public
- * GET    /api/v1/items/categories   Get all categories from database   Public
- * GET    /api/v1/items/:id          Get item by id from database       Public
- * POST   /api/v1/items/create_item  Create an item                     Public (for now)
- * PUT    /api/v1/items/:id          Update an item                     Public (for now)
+ * GET    /api/v1/items                   Get all items from database        Public
+ * GET    /api/v1/items/available         Get available items from database  Public
+ * GET    /api/v1/items/categories        Get all categories from database   Public
+ * GET    /api/v1/items/:id               Get item by id from database       Public
+ * POST   /api/v1/items/create_item       Create an item                     Private
+ * PUT    /api/v1/items/:id/edit          Edit an item                       Private
+ * PUT    /api/v1/items/:id               Delete an item                     Private
+ * PUT    /api/v1/items/:id/availability  Update item availability           Private
  */
 
 //@desc     Get all items from database
@@ -27,8 +30,21 @@ const getItems = asyncHandler(async (req, res) => {
         },
       }
     : {};
-  const count = await Item.countDocuments({ ...keyword });
-  const items = await Item.find({ ...keyword })
+
+  //setting up find params to insert into mongoose method
+  const findParams = {
+    isDelete: 'false',
+    ...keyword,
+  };
+
+  /*we only want to provide items that are not available if requested in the headers. 
+  only the user dashboard table will want to display this data*/
+  if (req.headers.wantnotavailable == 'false') {
+    findParams.isAvailable = 'true';
+  }
+
+  const count = await Item.countDocuments(findParams);
+  const items = await Item.find(findParams)
     .limit(pageSize)
     .skip(pageSize * (page - 1))
     .populate('user', 'name')
@@ -173,4 +189,44 @@ const updateItem = asyncHandler(async (req, res) => {
   }
 });
 
-export { getItems, getCategories, getItemById, createItem, updateItem };
+//@desc     Delete an item
+//@route    PUT/api/v1/items/:id <- setting delete flag so not using DELETE
+//@access   private
+const deleteItem = asyncHandler(async (req, res) => {
+  const item = await Item.findById(req.params.id);
+
+  if (item) {
+    item.isDelete = true;
+    const updatedItem = await item.save();
+    res.status(201).json(updatedItem);
+  } else {
+    res.status(400);
+    throw new Error(`Item not found`);
+  }
+});
+
+//@desc     Update item availability
+//@route    PUT/api/v1/items/:id/availability
+//@access   private
+const updateItemAvailability = asyncHandler(async (req, res) => {
+  const item = await Item.findById(req.params.id);
+
+  if (item) {
+    item.isAvailable = req.body.isAvailable;
+    const updatedItem = await item.save();
+    res.status(201).json(updatedItem);
+  } else {
+    res.status(400);
+    throw new Error(`Item not found`);
+  }
+});
+
+export {
+  getItems,
+  getCategories,
+  getItemById,
+  createItem,
+  updateItem,
+  deleteItem,
+  updateItemAvailability,
+};

@@ -20,7 +20,7 @@ const HomeScreen = ({ history }) => {
         </Row>
         <Row>
           <Col className='mt-4 mb-4 d-flex justify-content-center'>
-            <SearchBox history={history} />
+            <SearchBox history={history} list={'items'} />
           </Col>
         </Row>
         <Row className='mt-4 mb-4'>
