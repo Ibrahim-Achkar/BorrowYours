@@ -1,7 +1,7 @@
 {
-  "name": "template-mern",
-  "version": "1.0.0",
-  "description": "template mern app",
+  "name": "BorrowYours",
+  "version": "0.0.1",
+  "description": "an app for sharing resources",
   "main": "./backend/server.js",
   "type": "module",
   "scripts": {
